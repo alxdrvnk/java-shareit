@@ -12,19 +12,28 @@ import java.util.Optional;
 @Component
 public class InMemoryUserStorage {
 
-    private final HashMap<Long, User> users = new HashMap<>();
+    private final HashMap<String, User> users = new HashMap<>();
+
+    // Понимаю что получиться дорого по памяти,
+    // но пока что не зеаю как сделать быстрый поиск уникального email
+    private final HashMap<Long, String> idMailMap = new HashMap<>();
 
     private Long id = 1L;
 
-    private Long getNextId(){
+    private Long getNextId() {
         return id++;
     }
 
     public User create(User user) {
-        if (checkUniqueEmail(user.getEmail())) {
+
+        if (!users.containsKey(user.getEmail())) {
+
             Long id = getNextId();
             User newUser = user.withId(id);
-            users.put(id, newUser);
+
+            users.put(user.getEmail(), newUser);
+            idMailMap.put(id, user.getEmail());
+
             return newUser;
         } else {
             throw new ShareItValidationException("Duplicate email");
@@ -32,11 +41,11 @@ public class InMemoryUserStorage {
     }
 
     public int update(User user) {
-        if (users.containsKey(user.getId())) {
-            users.put(user.getId(), user);
+        if (users.containsKey(user.getEmail())) {
+            users.put(user.getEmail(), user);
             return 1;
         } else {
-           return 0;
+            return 0;
         }
     }
 
@@ -46,18 +55,20 @@ public class InMemoryUserStorage {
 
     public Optional<Object> getBy(Long id) {
         try {
-            return Optional.of(users.get(id));
+            return Optional.of(users.get(idMailMap.get(id)));
         } catch (NullPointerException e) {
             return Optional.empty();
         }
     }
 
     public int deleteBy(Long id) {
-        return users.remove(id) == null ?  0 : 1;
-    }
+        String email = idMailMap.get(id);
 
-    private boolean checkUniqueEmail(String email) {
-        return users.values().stream().filter(
-                user -> user.getEmail().equals(email)).findAny().isEmpty();
+        if (email != null) {
+            users.remove(email);
+            idMailMap.remove(id);
+            return 1;
+        }
+        return 0;
     }
 }
