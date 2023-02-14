@@ -29,9 +29,34 @@ public class ItemMapper {
                 .id(itemDto.getId())
                 .name(itemDto.getName())
                 .description(itemDto.getDescription())
-                .available(itemDto.isAvailable())
+                .available(itemDto.getAvailable())
                 .owner(itemDto.getOwner())
                 .request(itemDto.getRequest())
                 .build();
+    }
+
+    public static Item patchItem(ItemDto from, Item to) {
+        var item = Item.builder()
+                .id(to.getId())
+                .name(to.getName())
+                .description(to.getDescription())
+                .available(to.isAvailable())
+                .owner(to.getOwner())
+                .request(to.getRequest());
+
+
+        if (from.getName() != null) {
+            item.name(from.getName());
+        }
+
+        if (from.getAvailable() != null) {
+            item.available(from.getAvailable());
+        }
+
+        if (from.getDescription() != null) {
+            item.description(from.getDescription());
+        }
+
+        return item.build();
     }
 }
