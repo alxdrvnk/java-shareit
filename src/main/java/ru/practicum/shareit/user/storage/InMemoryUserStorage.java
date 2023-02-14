@@ -36,16 +36,29 @@ public class InMemoryUserStorage {
 
             return newUser;
         } else {
-            throw new ShareItValidationException("Duplicate email");
+            throw new ShareItValidationException(
+                    String.format("User with email: %s already exists", user.getEmail()));
         }
     }
 
+    /**
+     * TODO Make less if-else.
+     */
     public int update(User user) {
-        if (users.containsKey(user.getEmail())) {
-            users.put(user.getEmail(), user);
-            return 1;
+        String email = idMailMap.get(user.getId());
+
+        if (email.equals(user.getEmail())) {
+           users.put(email, user);
+           return 1;
         } else {
-            return 0;
+            if (!idMailMap.containsValue(user.getEmail())) {
+                idMailMap.put(user.getId(), user.getEmail());
+                users.remove(email);
+                users.put(user.getEmail(), user);
+                return 1;
+            } else {
+                return  0;
+            }
         }
     }
 

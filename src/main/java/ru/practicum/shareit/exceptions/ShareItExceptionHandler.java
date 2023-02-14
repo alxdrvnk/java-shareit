@@ -14,8 +14,8 @@ import java.util.List;
 @ControllerAdvice
 public class ShareItExceptionHandler {
 
-    @ExceptionHandler(value = ShareitNotFoundException.class)
-    public ResponseEntity<Object> handleNotFoundException(ShareitNotFoundException exception,
+    @ExceptionHandler(value = ShareItNotFoundException.class)
+    public ResponseEntity<Object> handleNotFoundException(ShareItNotFoundException exception,
                                                           WebRequest request) {
         ShareItError error = ShareItError.builder()
                 .status(HttpStatus.NOT_FOUND.value())
@@ -26,6 +26,15 @@ public class ShareItExceptionHandler {
     @ExceptionHandler(value = ShareItValidationException.class)
     public ResponseEntity<Object> handleValidationException(ShareItValidationException exception,
                                                             WebRequest request) {
+        ShareItError error = ShareItError.builder()
+                .status(HttpStatus.CONFLICT.value())
+                .errors(List.of(exception.getMessage())).build();
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(value = ShareItAlreadyExistsException.class)
+    public ResponseEntity<Object> handleAlreadyExistsException(ShareItAlreadyExistsException exception,
+                                                               WebRequest request) {
         ShareItError error = ShareItError.builder()
                 .status(HttpStatus.CONFLICT.value())
                 .errors(List.of(exception.getMessage())).build();
