@@ -2,7 +2,7 @@ package ru.practicum.shareit.user.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.ShareItAlreadyExistsException;
 import ru.practicum.shareit.exceptions.ShareItNotFoundException;
 import ru.practicum.shareit.user.User;
@@ -11,7 +11,7 @@ import ru.practicum.shareit.user.storage.InMemoryUserStorage;
 import java.util.List;
 
 @Slf4j
-@Component
+@Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
 
@@ -26,7 +26,7 @@ public class UserServiceImpl implements UserService{
     public User update(User user) {
         if (storage.update(user) == 0) {
                 throw new ShareItAlreadyExistsException(
-                        String.format("User with email:%s already exists", user.getEmail()));
+                        String.format("User with email: %s already exists", user.getEmail()));
         }
         return user;
     }
