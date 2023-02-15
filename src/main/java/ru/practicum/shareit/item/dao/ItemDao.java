@@ -13,6 +13,8 @@ public interface ItemDao {
 
     Optional<Item> get(long id);
 
+    Optional<Item> getItemByUser(long userId, long itemId);
+
     List<Item> getUserItems(long userId);
 
     List<Item> getAvailableItems(String text);

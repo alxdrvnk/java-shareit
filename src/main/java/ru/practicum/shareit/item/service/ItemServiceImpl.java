@@ -22,23 +22,25 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public Item update(Item item) {
-        return null;
-    }
-
-    @Override
-    public List<Item> getAllItems() {
-        return null;
+    public Item update(Item item, Long userId) {
+        storage.getItemByUser(userId, item.getId());
+        if (storage.update(item) == 0) {
+            throw new ShareItNotFoundException(
+                    String.format("Item with id: %s not found", item.getId()));
+        }
+        return item;
     }
 
     @Override
     public Item getItemById(long id) {
-        return null;
+        return storage.get(id).orElseThrow(
+                () -> new ShareItNotFoundException(
+                        String.format("Item with id: %s  not found", id)));
     }
 
     @Override
     public List<Item> getItemsByUser(long userId) {
-        return null;
+        return storage.getUserItems(userId);
     }
 
     @Override

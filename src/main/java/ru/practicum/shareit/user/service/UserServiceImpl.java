@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.ShareItAlreadyExistsException;
 import ru.practicum.shareit.exceptions.ShareItNotFoundException;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.storage.InMemoryUserStorage;
+import ru.practicum.shareit.user.dao.InMemoryUserStorage;
 
 import java.util.List;
 
@@ -38,8 +38,8 @@ public class UserServiceImpl implements UserService{
 
     @Override
     public User getUserBy(long id) {
-        return (User) storage.getBy(id).orElseThrow(
-                () -> new ShareItNotFoundException(String.format("User with id: %d not found", id)));
+        return storage.getBy(id).orElseThrow(
+                () -> new ShareItNotFoundException(String.format("User with id: %s not found", id)));
     }
 
     @Override

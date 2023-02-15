@@ -1,4 +1,4 @@
-package ru.practicum.shareit.user.storage;
+package ru.practicum.shareit.user.dao;
 
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exceptions.ShareItValidationException;
@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class InMemoryUserStorage {
+public class InMemoryUserStorage implements UserDao{
 
     private final HashMap<String, User> users = new HashMap<>();
 
@@ -24,6 +24,7 @@ public class InMemoryUserStorage {
         return id++;
     }
 
+    @Override
     public User create(User user) {
 
         if (!users.containsKey(user.getEmail())) {
@@ -44,6 +45,7 @@ public class InMemoryUserStorage {
     /**
      * TODO Make less if-else.
      */
+    @Override
     public int update(User user) {
         String email = idMailMap.get(user.getId());
 
@@ -62,11 +64,13 @@ public class InMemoryUserStorage {
         }
     }
 
+    @Override
     public List<User> getAll() {
         return new ArrayList<>(users.values());
     }
 
-    public Optional<Object> getBy(Long id) {
+    @Override
+    public Optional<User> getBy(Long id) {
         try {
             return Optional.of(users.get(idMailMap.get(id)));
         } catch (NullPointerException e) {
@@ -74,6 +78,7 @@ public class InMemoryUserStorage {
         }
     }
 
+    @Override
     public int deleteBy(Long id) {
         String email = idMailMap.get(id);
 

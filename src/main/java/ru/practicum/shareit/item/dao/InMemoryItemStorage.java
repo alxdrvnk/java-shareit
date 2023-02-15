@@ -36,7 +36,6 @@ public class InMemoryItemStorage implements ItemDao {
 
     @Override
     public int update(Item item) {
-
         if (itemsMap.containsKey(item.getId())) {
             itemsMap.put(item.getId(), item);
             return 1;
@@ -55,11 +54,20 @@ public class InMemoryItemStorage implements ItemDao {
     }
 
     @Override
+    public Optional<Item> getItemByUser(long userId, long itemId) {
+        if (userItemsMap.get(userId).contains(itemId)) {
+            return Optional.of(itemsMap.get(itemId));
+        } else {
+            return Optional.empty();
+        }
+    }
+
+    @Override
     public List<Item> getUserItems(long userId) {
         List<Item> items = new ArrayList<>();
 
-        for (long id : userItemsMap.get(userId)) {
-            items.add(itemsMap.get(id));
+        for (long itemId : userItemsMap.get(userId)) {
+            items.add(itemsMap.get(itemId));
         }
         return items;
     }
