@@ -18,7 +18,7 @@ public class InMemoryUserStorage {
     // но пока что не зеаю как сделать быстрый поиск уникального email
     private final HashMap<Long, String> idMailMap = new HashMap<>();
 
-    private Long id = 1L;
+    private long id = 1L;
 
     private Long getNextId() {
         return id++;

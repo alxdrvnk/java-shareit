@@ -3,9 +3,9 @@ package ru.practicum.shareit.item.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exceptions.ShareItNotFoundException;
+import ru.practicum.shareit.item.dao.ItemDao;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.item.storage.InMemoryItemStorage;
-import ru.practicum.shareit.user.service.UserService;
 
 import java.util.List;
 
@@ -14,12 +14,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService{
 
-    private final UserService userService;
-    private final InMemoryItemStorage storage;
+    private final ItemDao storage;
 
     @Override
     public Item create(Item item) {
-        return null;
+        return storage.create(item);
     }
 
     @Override
@@ -43,11 +42,15 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public List<Item> getAvailableItems() {
-        return null;
+    public List<Item> getAvailableItems(String text) {
+        return storage.getAvailableItems(text);
     }
 
     @Override
-    public void deleteItemById(long itemId) {
+    public void deleteItemById(long itemId, long userId) {
+        if(storage.delete(itemId, userId) == 0) {
+            throw new ShareItNotFoundException(
+                    String.format("Can't delete Item Id: %s and User Id: %s", itemId, userId));
+        }
     }
 }

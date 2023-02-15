@@ -16,7 +16,7 @@ public interface ItemService {
 
     List<Item> getItemsByUser(long userId);
 
-    List<Item> getAvailableItems();
+    List<Item> getAvailableItems(String text);
 
-    void deleteItemById(long itemId);
+    void deleteItemById(long itemId, long userId);
 }
