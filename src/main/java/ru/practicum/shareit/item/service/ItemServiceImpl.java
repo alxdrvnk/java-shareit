@@ -23,7 +23,6 @@ public class ItemServiceImpl implements ItemService{
 
     @Override
     public Item update(Item item, Long userId) {
-        storage.getItemByUser(userId, item.getId());
         if (storage.update(item) == 0) {
             throw new ShareItNotFoundException(
                     String.format("Item with id: %s not found", item.getId()));
@@ -35,7 +34,14 @@ public class ItemServiceImpl implements ItemService{
     public Item getItemById(long id) {
         return storage.get(id).orElseThrow(
                 () -> new ShareItNotFoundException(
-                        String.format("Item with id: %s  not found", id)));
+                        String.format("Item with id: %s not found", id)));
+    }
+
+    @Override
+    public Item getItemByUser(long userId, long itemId) {
+        return storage.getItemByUser(userId, itemId).orElseThrow(
+                () -> new ShareItNotFoundException(
+                        String.format("Item with id: %s does not belong to User with id: %s", itemId, userId)));
     }
 
     @Override
@@ -45,7 +51,7 @@ public class ItemServiceImpl implements ItemService{
 
     @Override
     public List<Item> getAvailableItems(String text) {
-        return storage.getAvailableItems(text);
+        return storage.getAvailableItems(text.toLowerCase());
     }
 
     @Override

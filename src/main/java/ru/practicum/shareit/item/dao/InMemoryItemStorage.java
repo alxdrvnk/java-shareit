@@ -55,9 +55,13 @@ public class InMemoryItemStorage implements ItemDao {
 
     @Override
     public Optional<Item> getItemByUser(long userId, long itemId) {
-        if (userItemsMap.get(userId).contains(itemId)) {
-            return Optional.of(itemsMap.get(itemId));
-        } else {
+        try {
+            if (userItemsMap.get(userId).contains(itemId)) {
+                return Optional.of(itemsMap.get(itemId));
+            } else {
+                return Optional.empty();
+            }
+        } catch (NullPointerException e) {
             return Optional.empty();
         }
     }
