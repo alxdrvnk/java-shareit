@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.ShareItAlreadyExistsException;
 import ru.practicum.shareit.exceptions.ShareItNotFoundException;
 import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.dao.InMemoryUserStorage;
+import ru.practicum.shareit.user.dao.UserDao;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService{
 
-    private final InMemoryUserStorage storage;
+    private final UserDao storage;
 
     @Override
     public User create(User user) {
