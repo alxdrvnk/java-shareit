@@ -11,7 +11,7 @@ import ru.practicum.shareit.user.User;
 public class Item {
 
     @With
-    Long id;
+    long id;
 
     String name;
 

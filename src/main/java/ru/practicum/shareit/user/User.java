@@ -9,7 +9,7 @@ import lombok.With;
 public class User {
 
     @With
-    Long id;
+    long id;
 
     String name;
 
