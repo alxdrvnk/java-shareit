@@ -12,7 +12,7 @@ import java.util.List;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class ItemServiceImpl implements ItemService{
+public class ItemServiceImpl implements ItemService {
 
     private final ItemDao storage;
 
@@ -56,7 +56,7 @@ public class ItemServiceImpl implements ItemService{
 
     @Override
     public void deleteItemById(long itemId, long userId) {
-        if(storage.delete(itemId, userId) == 0) {
+        if (storage.delete(itemId, userId) == 0) {
             throw new ShareItNotFoundException(
                     String.format("Can't delete Item Id: %s and User Id: %s", itemId, userId));
         }

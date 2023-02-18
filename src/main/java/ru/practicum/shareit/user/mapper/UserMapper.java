@@ -22,7 +22,7 @@ public class UserMapper {
 
     public static User toUser(UserDto userDto) {
 
-        if (userDto== null) {
+        if (userDto == null) {
             return null;
         }
 
