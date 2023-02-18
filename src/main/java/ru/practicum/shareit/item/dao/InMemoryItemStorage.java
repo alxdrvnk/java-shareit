@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class InMemoryItemStorage implements ItemDao {
 
-    private final HashMap<Long, Set<Long>> userItemsMap = new HashMap<>();
-    private final HashMap<Long, Item> itemsMap = new HashMap<>();
+    private final HashMap<Long, Set<Long>> userItemsMap;
+    private final HashMap<Long, Item> itemsMap;
 
     private long id = 1L;
 

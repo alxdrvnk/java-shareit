@@ -8,7 +8,7 @@ public interface ItemService {
 
     Item create(Item item);
 
-    Item update(Item item, Long userId);
+    Item update(Item item);
 
     Item getItemById(long id);
 

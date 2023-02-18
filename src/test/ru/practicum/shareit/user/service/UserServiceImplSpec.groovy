@@ -1,9 +1,11 @@
 package ru.practicum.shareit.user.service
 
+import org.checkerframework.checker.nullness.Opt
 import ru.practicum.shareit.exceptions.ShareItAlreadyExistsException
 import ru.practicum.shareit.exceptions.ShareItNotFoundException
 import ru.practicum.shareit.user.User
 import ru.practicum.shareit.user.dao.InMemoryUserStorage
+import ru.practicum.shareit.user.dao.UserDao
 import spock.lang.Specification
 
 class UserServiceImplSpec extends Specification {
@@ -15,26 +17,14 @@ class UserServiceImplSpec extends Specification {
                 .email("testUser@email.email")
                 .build()
 
-        def user2 = User.builder()
-                .name("user2")
-                .email("")
-                .build()
+        def dao = Stub(UserDao) {
+            update(user) >> 0
+        }
 
-        def service = new UserServiceImpl(new InMemoryUserStorage())
-
-        and:
-        service.create(user)
-
-        def user2Db = service.create(user2)
-
-        user2 = User.builder()
-                .id(user2Db.getId())
-                .name(user2Db.getName())
-                .email(user.getEmail())
-                .build()
+        def service = new UserServiceImpl(dao)
 
         when:
-        service.update(user2)
+        service.update(user)
 
         then:
         thrown(ShareItAlreadyExistsException)
@@ -42,7 +32,11 @@ class UserServiceImplSpec extends Specification {
 
     def "Should throw ShareItNotFoundException if get non-existing user" () {
         given:
-        def service = new UserServiceImpl(new InMemoryUserStorage())
+        def dao = Stub(UserDao) {
+            getBy(_ as Long) >> Optional.empty()
+        }
+
+        def service = new UserServiceImpl(dao)
 
         when:
         service.getUserBy(9999)
@@ -53,7 +47,12 @@ class UserServiceImplSpec extends Specification {
 
     def "Should throw ShareItNotFoundException if delete non-existing user" () {
         given:
-        def service = new UserServiceImpl(new InMemoryUserStorage())
+
+        def dao = Stub(UserDao) {
+            deleteBy(_ as Long) >> 0
+        }
+
+        def service = new UserServiceImpl(dao)
 
         when:
         service.deleteUserBy(9999)

@@ -35,7 +35,7 @@ public class ItemController {
                           @RequestHeader("X-Sharer-User-Id") long userId) {
 
         Item item = itemService.getItemByUser(userId, id);
-        return ItemMapper.toItemDto(itemService.update(ItemMapper.patchItem(itemDto, item), userId));
+        return ItemMapper.toItemDto(itemService.update(ItemMapper.patchItem(itemDto, item)));
     }
 
     @GetMapping("/{id}")

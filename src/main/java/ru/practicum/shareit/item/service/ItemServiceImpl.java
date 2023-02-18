@@ -22,7 +22,7 @@ public class ItemServiceImpl implements ItemService{
     }
 
     @Override
-    public Item update(Item item, Long userId) {
+    public Item update(Item item) {
         if (storage.update(item) == 0) {
             throw new ShareItNotFoundException(
                     String.format("Item with id: %s not found", item.getId()));

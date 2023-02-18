@@ -1,5 +1,6 @@
 package ru.practicum.shareit.user.dao;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.exceptions.ShareItValidationException;
 import ru.practicum.shareit.user.User;
@@ -10,13 +11,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public class InMemoryUserStorage implements UserDao{
+@RequiredArgsConstructor
+public class InMemoryUserStorage implements UserDao {
 
-    private final HashMap<String, User> users = new HashMap<>();
+    private final HashMap<String, User> users;
 
-    // Понимаю что получиться дорого по памяти,
-    // но пока что не зеаю как сделать быстрый поиск уникального email
-    private final HashMap<Long, String> idMailMap = new HashMap<>();
+    // Понимаю, что получится дорого по памяти,
+    // но пока что не знаю как сделать быстрый поиск уникального email
+    private final HashMap<Long, String> idMailMap;
 
     private long id = 1L;
 
@@ -42,25 +44,26 @@ public class InMemoryUserStorage implements UserDao{
         }
     }
 
-    /**
-     * TODO Make less if-else.
-     */
+    // Кажется здесь слишком много if-else
     @Override
     public int update(User user) {
         String email = idMailMap.get(user.getId());
-
-        if (email.equals(user.getEmail())) {
-           users.put(email, user);
-           return 1;
-        } else {
-            if (!idMailMap.containsValue(user.getEmail())) {
-                idMailMap.put(user.getId(), user.getEmail());
-                users.remove(email);
-                users.put(user.getEmail(), user);
+        try {
+            if (email.equals(user.getEmail())) {
+                users.put(email, user);
                 return 1;
             } else {
-                return  0;
+                if (!idMailMap.containsValue(user.getEmail())) {
+                    idMailMap.put(user.getId(), user.getEmail());
+                    users.remove(email);
+                    users.put(user.getEmail(), user);
+                    return 1;
+                } else {
+                    return 0;
+                }
             }
+        } catch (NullPointerException e) {
+            return 0;
         }
     }
 

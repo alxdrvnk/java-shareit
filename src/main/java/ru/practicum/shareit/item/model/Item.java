@@ -6,10 +6,6 @@ import lombok.With;
 import ru.practicum.shareit.request.ItemRequest;
 import ru.practicum.shareit.user.User;
 
-/**
- * TODO Sprint add-controllers.
- */
-
 @Value
 @Builder
 public class Item {

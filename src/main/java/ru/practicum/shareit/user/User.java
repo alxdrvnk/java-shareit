@@ -4,10 +4,6 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.With;
 
-/**
- * TODO Sprint add-controllers.
- */
-
 @Value
 @Builder
 public class User {
