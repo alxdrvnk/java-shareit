@@ -2,16 +2,20 @@ package ru.practicum.shareit.item.service
 
 import ru.practicum.shareit.exceptions.ShareItNotFoundException
 import ru.practicum.shareit.item.dao.ItemDao
+import ru.practicum.shareit.item.dto.ItemDto
 import ru.practicum.shareit.item.model.Item
 import ru.practicum.shareit.user.User
+import ru.practicum.shareit.user.dao.UserDao
+import ru.practicum.shareit.user.service.UserService
+import ru.practicum.shareit.user.service.UserServiceImpl
+import ru.practicum.shareit.user.service.UserServiceImplSpec
 import spock.lang.Specification
 
 class ItemServiceImplSpec extends Specification {
 
     def "Should throw ShareItNotFoundException if update item not-exists"() {
         given:
-        def item = Item.builder()
-                .id(9999)
+        def item = ItemDto.builder()
                 .name("Non-exists item")
                 .description("non-exists")
                 .available(true)
@@ -20,13 +24,13 @@ class ItemServiceImplSpec extends Specification {
                 .build()
 
         def dao = Stub(ItemDao) {
-            update(_ as Item) >> 0
+           update(_ as Item) >> 0
         }
 
-        def service = new ItemServiceImpl(dao)
+        def service = new ItemServiceImpl(dao, Stub(UserService))
 
         when:
-        service.update(item)
+        service.update(item, 9999, 9999)
 
         then:
         thrown(ShareItNotFoundException)
@@ -38,7 +42,7 @@ class ItemServiceImplSpec extends Specification {
             get(_ as long) >> Optional.empty()
         }
 
-        def service = new ItemServiceImpl(dao)
+        def service = new ItemServiceImpl(dao, Stub(UserService))
 
         when:
         service.getItemById(9999)
@@ -53,7 +57,7 @@ class ItemServiceImplSpec extends Specification {
             getItemByUser(_ as long, _ as long) >> Optional.empty()
         }
 
-        def service = new ItemServiceImpl(dao)
+        def service = new ItemServiceImpl(dao, Stub(UserService))
 
         when:
         service.getItemByUser(9999, 9999)
@@ -68,7 +72,7 @@ class ItemServiceImplSpec extends Specification {
             delete(_ as Long, _ as Long) >> 0
         }
 
-        def service = new ItemServiceImpl(dao)
+        def service = new ItemServiceImpl(dao, Stub(UserService))
 
         when:
         service.deleteItemById(9999L, 9999L)

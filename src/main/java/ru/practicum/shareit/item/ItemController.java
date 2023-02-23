@@ -1,41 +1,39 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.mapper.ItemMapper;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
-import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.service.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
 public class ItemController {
 
     private final ItemService itemService;
-    private final UserService userService;
 
     @PostMapping
     public ItemDto create(@Valid @RequestBody ItemDto itemDto,
                           @RequestHeader("X-Sharer-User-Id") long userId) {
-        User owner  = userService.getUserBy(userId);
+        log.info(String.format("ItemController: create Item request. Data: %s", itemDto));
         return ItemMapper.toItemDto(
-                itemService.create(ItemMapper.toItem(itemDto).withOwner(owner)));
+                itemService.create(ItemMapper.toItem(itemDto), userId));
     }
 
     @PatchMapping("/{id}")
     public ItemDto update(@PathVariable("id") long id,
                           @RequestBody ItemDto itemDto,
                           @RequestHeader("X-Sharer-User-Id") long userId) {
-
-        Item item = itemService.getItemByUser(userId, id);
-        return ItemMapper.toItemDto(itemService.update(ItemMapper.patchItem(itemDto, item)));
+        log.info(String.format("ItemController: update Item with id: %d . Data: %s", id, itemDto));
+        return ItemMapper.toItemDto(
+                itemService.update(itemDto, id, userId));
     }
 
     @GetMapping("/{id}")

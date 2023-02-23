@@ -7,6 +7,7 @@ import ru.practicum.shareit.exceptions.ShareItAlreadyExistsException;
 import ru.practicum.shareit.exceptions.ShareItNotFoundException;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.dao.UserDao;
+import ru.practicum.shareit.user.mapper.UserMapper;
 
 import java.util.List;
 
@@ -23,7 +24,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User update(User user) {
+    public User update(User updateUser, long userId) {
+        User user = UserMapper.patchUser(updateUser, getUserBy(userId));
         if (storage.update(user) == 0) {
                 throw new ShareItAlreadyExistsException(
                         String.format("User with email: %s already exists", user.getEmail()));

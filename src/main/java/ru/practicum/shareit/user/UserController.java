@@ -27,10 +27,7 @@ public class UserController {
     @PatchMapping("/{id}")
     public UserDto update(@PathVariable("id") Long id, @RequestBody UserDto user) {
         log.info(String.format("UserController: update User with id: %d . Data: %s", id, user));
-
-        User dbUser = userService.getUserBy(id);
-
-        return UserMapper.toUserDto(userService.update(UserMapper.patchUser(user, dbUser)));
+        return UserMapper.toUserDto(userService.update(UserMapper.toUser(user), id));
     }
 
     @GetMapping

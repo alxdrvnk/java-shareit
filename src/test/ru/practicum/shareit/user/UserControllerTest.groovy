@@ -67,7 +67,7 @@ class UserControllerTest extends Specification {
                 .content(objectMapper.writeValueAsString(userDto)))
                 .andExpect(status().isOk())
 
-        mvc.perform(patch("/users/2")
+        mvc.perform(patch("/users/3")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateUserDto)))
                 .andExpect(status().isConflict())

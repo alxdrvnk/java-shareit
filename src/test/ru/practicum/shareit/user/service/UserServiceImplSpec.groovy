@@ -1,10 +1,8 @@
 package ru.practicum.shareit.user.service
 
-import org.checkerframework.checker.nullness.Opt
 import ru.practicum.shareit.exceptions.ShareItAlreadyExistsException
 import ru.practicum.shareit.exceptions.ShareItNotFoundException
 import ru.practicum.shareit.user.User
-import ru.practicum.shareit.user.dao.InMemoryUserStorage
 import ru.practicum.shareit.user.dao.UserDao
 import spock.lang.Specification
 
@@ -19,12 +17,14 @@ class UserServiceImplSpec extends Specification {
 
         def dao = Stub(UserDao) {
             update(user) >> 0
+
+            getBy(1L) >> Optional.of(User.builder().build())
         }
 
         def service = new UserServiceImpl(dao)
 
         when:
-        service.update(user)
+        service.update(user, 1L)
 
         then:
         thrown(ShareItAlreadyExistsException)

@@ -5,7 +5,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.ShareItNotFoundException;
 import ru.practicum.shareit.item.dao.ItemDao;
+import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.user.service.UserService;
 
 import java.util.List;
 
@@ -15,14 +19,18 @@ import java.util.List;
 public class ItemServiceImpl implements ItemService {
 
     private final ItemDao storage;
+    private final UserService userService;
 
     @Override
-    public Item create(Item item) {
-        return storage.create(item);
+    public Item create(Item item, long userId) {
+        User user = userService.getUserBy(userId);
+        return storage.create(item.withOwner(user));
     }
 
     @Override
-    public Item update(Item item) {
+    public Item update(ItemDto itemDto, long itemId, long userId) {
+        Item actualItem = getItemByUser(userId, itemId);
+        Item item = ItemMapper.patchItem(itemDto, actualItem);
         if (storage.update(item) == 0) {
             throw new ShareItNotFoundException(
                     String.format("Item with id: %s not found", item.getId()));

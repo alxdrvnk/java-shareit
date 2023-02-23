@@ -20,6 +20,7 @@ public class ShareItExceptionHandler {
         ShareItError error = ShareItError.builder()
                 .status(HttpStatus.NOT_FOUND.value())
                 .errors(List.of(exception.getMessage())).build();
+        log.warn(String.format("WARNING: %s", error));
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
@@ -29,6 +30,7 @@ public class ShareItExceptionHandler {
         ShareItError error = ShareItError.builder()
                 .status(HttpStatus.CONFLICT.value())
                 .errors(List.of(exception.getMessage())).build();
+        log.warn(String.format("WARNING: %s", error));
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 
@@ -38,6 +40,7 @@ public class ShareItExceptionHandler {
         ShareItError error = ShareItError.builder()
                 .status(HttpStatus.CONFLICT.value())
                 .errors(List.of(exception.getMessage())).build();
+        log.warn(String.format("WARNING: %s", error));
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
 }

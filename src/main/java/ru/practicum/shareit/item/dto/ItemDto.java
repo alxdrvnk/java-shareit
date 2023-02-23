@@ -8,10 +8,6 @@ import ru.practicum.shareit.user.User;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-/**
- * TODO Sprint add-controllers.
- */
-
 @Value
 @Builder
 public class ItemDto {

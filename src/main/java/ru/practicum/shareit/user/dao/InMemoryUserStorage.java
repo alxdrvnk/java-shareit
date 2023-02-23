@@ -16,8 +16,6 @@ public class InMemoryUserStorage implements UserDao {
 
     private final HashMap<String, User> users;
 
-    // Понимаю, что получится дорого по памяти,
-    // но пока что не знаю как сделать быстрый поиск уникального email
     private final HashMap<Long, String> idMailMap;
 
     private long id = 1L;
@@ -44,7 +42,6 @@ public class InMemoryUserStorage implements UserDao {
         }
     }
 
-    // Кажется здесь слишком много if-else
     @Override
     public int update(User user) {
         String email = idMailMap.get(user.getId());

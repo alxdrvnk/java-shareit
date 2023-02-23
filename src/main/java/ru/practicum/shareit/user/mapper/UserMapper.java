@@ -36,8 +36,7 @@ public class UserMapper {
         return allUsers.stream().map(UserMapper::toUserDto).collect(Collectors.toList());
     }
 
-    //Наверное можно было бы использовать либу MapStruct, но это наверное читерство
-    public static User patchUser(UserDto from, User to) {
+    public static User patchUser(User from, User to) {
         var user = User.builder()
                 .id(to.getId())
                 .name(to.getName())
