@@ -4,11 +4,8 @@ import ru.practicum.shareit.exceptions.ShareItNotFoundException
 import ru.practicum.shareit.item.dao.ItemDao
 import ru.practicum.shareit.item.dto.ItemDto
 import ru.practicum.shareit.item.model.Item
-import ru.practicum.shareit.user.User
-import ru.practicum.shareit.user.dao.UserDao
+import ru.practicum.shareit.user.model.User
 import ru.practicum.shareit.user.service.UserService
-import ru.practicum.shareit.user.service.UserServiceImpl
-import ru.practicum.shareit.user.service.UserServiceImplSpec
 import spock.lang.Specification
 
 class ItemServiceImplSpec extends Specification {

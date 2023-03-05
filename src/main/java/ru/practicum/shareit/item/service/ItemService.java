@@ -15,9 +15,11 @@ public interface ItemService {
 
     Item getItemByUser(long userId, long itemId);
 
+    Item getItemNotOwnedByUser(long userId, long itemId);
+
     List<Item> getItemsByUser(long userId);
 
-    List<Item> getAvailableItems(String text);
-
     void deleteItemById(long itemId, long userId);
+
+    List<ItemDto> getByText(long userId, String text);
 }

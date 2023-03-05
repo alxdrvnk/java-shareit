@@ -1,6 +1,6 @@
 package ru.practicum.shareit.user.dao
 
-import ru.practicum.shareit.user.User
+import ru.practicum.shareit.user.model.User
 import spock.lang.Specification
 
 class InMemoryUserStorageSpec extends Specification {

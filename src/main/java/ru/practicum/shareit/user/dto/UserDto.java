@@ -12,7 +12,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @Jacksonized
 public class UserDto {
-    long id;
+    Long id;
 
     @NotNull
     @NotBlank

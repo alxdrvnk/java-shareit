@@ -1,4 +1,4 @@
-package ru.practicum.shareit.user;
+package ru.practicum.shareit.user.model;
 
 import lombok.*;
 
@@ -7,7 +7,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
-@Builder
+@Builder(toBuilder = true)
 @Getter
 @NoArgsConstructor
 public class User {
@@ -19,6 +19,6 @@ public class User {
     @Column(name = "name")
     String name;
 
-    @Column(name = "email", nullable = false)
+    @Column(name = "email")
     String email;
 }

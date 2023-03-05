@@ -7,7 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import ru.practicum.shareit.item.dto.ItemDto
-import ru.practicum.shareit.user.User
+import ru.practicum.shareit.user.model.User
 import ru.practicum.shareit.user.dto.UserDto
 import spock.lang.Specification
 

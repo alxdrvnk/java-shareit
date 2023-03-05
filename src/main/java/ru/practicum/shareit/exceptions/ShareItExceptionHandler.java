@@ -43,4 +43,14 @@ public class ShareItExceptionHandler {
         log.warn(String.format("WARNING: %s", error));
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
     }
+
+    @ExceptionHandler(value = ShareItBadRequest.class)
+    public ResponseEntity<Object> handleBadRequestException(ShareItBadRequest exception,
+                                                               WebRequest request) {
+        ShareItError error = ShareItError.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .errors(List.of(exception.getMessage())).build();
+        log.warn(String.format("WARNING: %s", error));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
 }

@@ -1,57 +1,26 @@
 package ru.practicum.shareit.user.mapper;
 
-import ru.practicum.shareit.user.User;
+import org.mapstruct.BeanMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.factory.Mappers;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class UserMapper {
-    public static UserDto toUserDto(User user) {
+@Mapper(componentModel = "spring")
+public interface UserMapper {
 
-        if (user == null) {
-            return null;
-        }
+    UserMapper MAPPER = Mappers.getMapper(UserMapper.class);
 
-        return UserDto.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .email(user.getEmail())
-                .build();
-    }
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    User updateUserFromDto(UserDto userDto, @MappingTarget User.UserBuilder user);
 
-    public static User toUser(UserDto userDto) {
+    User toUser(UserDto userDto);
 
-        if (userDto == null) {
-            return null;
-        }
+    UserDto toUserDto(User user);
 
-        return User.builder()
-                .name(userDto.getName())
-                .email(userDto.getEmail())
-                .build();
-    }
-
-    public static List<UserDto> toDtoList(List<User> allUsers) {
-        return allUsers.stream().map(UserMapper::toUserDto).collect(Collectors.toList());
-    }
-
-    public static User patchUser(User from, User to) {
-        var user = User.builder()
-                .id(to.getId())
-                .name(to.getName())
-                .email(to.getEmail());
-
-        if (from.getName() != null) {
-           user.name(from.getName());
-        }
-
-        if (from.getEmail() != null) {
-            user.email(from.getEmail());
-        }
-
-        return user.build();
-    }
+    List<UserDto> toUserDtoList(List<User> userList);
 }
-
-

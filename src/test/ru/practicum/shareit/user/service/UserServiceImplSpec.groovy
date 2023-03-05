@@ -2,7 +2,7 @@ package ru.practicum.shareit.user.service
 
 import ru.practicum.shareit.exceptions.ShareItAlreadyExistsException
 import ru.practicum.shareit.exceptions.ShareItNotFoundException
-import ru.practicum.shareit.user.User
+import ru.practicum.shareit.user.model.User
 import ru.practicum.shareit.user.dao.UserDao
 import spock.lang.Specification
 

@@ -1,62 +1,26 @@
 package ru.practicum.shareit.item.mapper;
 
+import org.mapstruct.BeanMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import org.mapstruct.factory.Mappers;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.model.Item;
 
-public class ItemMapper {
-    public static ItemDto toItemDto(Item item) {
-        if (item == null) {
-            return null;
-        }
+import java.util.List;
 
-        return ItemDto.builder()
-                .id(item.getId())
-                .name(item.getName())
-                .description(item.getDescription())
-                .available(item.isAvailable())
-                .owner(item.getOwner())
-                .request(item.getRequest())
-                .build();
+@Mapper(componentModel = "spring")
+public interface ItemMapper {
 
-    }
+    ItemMapper MAPPER = Mappers.getMapper(ItemMapper.class);
 
-    public static Item toItem(ItemDto itemDto) {
-        if (itemDto == null) {
-            return null;
-        }
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    Item updateItemFromDto(ItemDto itemDto, @MappingTarget Item.ItemBuilder item);
 
-        return Item.builder()
-                .id(itemDto.getId())
-                .name(itemDto.getName())
-                .description(itemDto.getDescription())
-                .available(itemDto.getAvailable())
-                .owner(itemDto.getOwner())
-                .request(itemDto.getRequest())
-                .build();
-    }
+    Item toItem(ItemDto itemDto);
 
-    public static Item patchItem(ItemDto from, Item to) {
-        var item = Item.builder()
-                .id(to.getId())
-                .name(to.getName())
-                .description(to.getDescription())
-                .available(to.isAvailable())
-                .owner(to.getOwner())
-                .request(to.getRequest());
+    ItemDto toItemDto(Item item);
 
-
-        if (from.getName() != null) {
-            item.name(from.getName());
-        }
-
-        if (from.getAvailable() != null) {
-            item.available(from.getAvailable());
-        }
-
-        if (from.getDescription() != null) {
-            item.description(from.getDescription());
-        }
-
-        return item.build();
-    }
+    List<ItemDto> toItemDtoList(List<Item> items);
 }

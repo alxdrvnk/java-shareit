@@ -1,7 +1,7 @@
 package ru.practicum.shareit.item.dao
 
 import ru.practicum.shareit.item.model.Item
-import ru.practicum.shareit.user.User
+import ru.practicum.shareit.user.model.User
 import spock.lang.Specification
 
 class InMemoryItemStorageSpec extends Specification {
