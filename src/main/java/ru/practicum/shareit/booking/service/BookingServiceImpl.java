@@ -7,13 +7,15 @@ import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.exceptions.ShareItBadRequest;
 import ru.practicum.shareit.exceptions.ShareItNotFoundException;
-import ru.practicum.shareit.exceptions.ShareItValidationException;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
+import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -30,7 +32,7 @@ class BookingServiceImpl implements BookingService {
         Item item = itemService.getItemNotOwnedByUser(userId, bookingDto.getItemId());
 
         if (!item.isAvailable()) {
-            throw new ShareItValidationException(String.format("Item with Id: %d doesn't available", item.getId()));
+            throw new ShareItBadRequest(String.format("Item with Id: %d doesn't available", item.getId()));
         }
 
         Booking booking = BookingMapper.MAPPER.toBooking(bookingDto, item, user, BookingStatus.WAITING);
@@ -49,7 +51,7 @@ class BookingServiceImpl implements BookingService {
         }
 
         if (booking.getStatus().equals(BookingStatus.APPROVED) && approved) {
-            throw new ShareItValidationException(
+            throw new ShareItBadRequest(
                     String.format("Booking with Id: %d already approved", id));
         }
 
@@ -80,13 +82,42 @@ class BookingServiceImpl implements BookingService {
     @Override
     public List<Booking> getAllByState(long userId, State state) {
         userService.getUserBy(userId);
-        return bookingRepository.findAllByBookerIdAndStatusIs(userId, state.name());
+        switch (state) {
+            case ALL:
+                return bookingRepository.findAllByBookerIdOrderByStartDesc(userId);
+            case PAST:
+                return bookingRepository.findAllByBookerIdAndEndBeforeOrderByStartDesc(userId, LocalDateTime.now());
+            case FUTURE:
+                return bookingRepository.findAllByBookerIdAndStartAfterOrderByStartDesc(userId, LocalDateTime.now());
+            case CURRENT:
+                return bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(
+                        userId, LocalDateTime.now(), LocalDateTime.now());
+            case WAITING:
+                return bookingRepository.findAllByBookerIdAndStatusIsOrderByStartDesc(userId, BookingStatus.WAITING);
+            case REJECTED:
+                return bookingRepository.findAllByBookerIdAndStatusIsOrderByStartDesc(userId, BookingStatus.REJECTED);
+            default:
+                return Collections.emptyList();
+        }
     }
 
     @Override
     public List<Booking> getAllByOwnerWithState(long userId, State state) {
         userService.getUserBy(userId);
-        return null;
-//        return bookingRepository.findAllByOwnerIdAndStatus(userId, state.name());
+        switch (state) {
+            case ALL:
+                return bookingRepository.findAllByOwnerId(userId);
+            case FUTURE:
+                return bookingRepository.findAllByOwnerIdAndFutureState(userId, LocalDateTime.now());
+            case CURRENT:
+                return bookingRepository.findAllByOwnerIdAndCurrentState(
+                        userId, LocalDateTime.now());
+            case WAITING:
+                return bookingRepository.findAllByOwnerIdAndStatus(userId, BookingStatus.WAITING);
+            case REJECTED:
+                return bookingRepository.findAllByOwnerIdAndStatus(userId, BookingStatus.REJECTED);
+            default:
+                return Collections.emptyList();
+        }
     }
 }

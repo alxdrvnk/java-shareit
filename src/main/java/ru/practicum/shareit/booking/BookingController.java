@@ -8,6 +8,7 @@ import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.booking.service.State;
+import ru.practicum.shareit.exceptions.ShareItBadRequest;
 
 import javax.validation.Valid;
 import java.util.Collection;
@@ -24,6 +25,7 @@ public class BookingController {
                             @RequestHeader("X-Sharer-User-Id") long userId) {
       log.info(String.format(
               "BookingController: create Booking request. Data: %s", bookingDto));
+      validateEndBeforeStartDate(bookingDto);
       return BookingMapper.MAPPER.toBookingDto(
               bookingService.create(bookingDto, userId));
    }
@@ -58,7 +60,7 @@ public class BookingController {
    }
 
    @GetMapping("/owner")
-   public Collection<BookingDto> getByOwnerWithSatet(@RequestParam String state,
+   public Collection<BookingDto> getByOwnerWithSatet(@RequestParam(defaultValue = "ALL") String state,
                                                      @RequestHeader("X-Sharer-User-Id") long userId) {
       log.info(String.format(
               "BookingController: get Booking request by State: %s for User with ID: %d", state, userId));
@@ -67,4 +69,9 @@ public class BookingController {
               bookingService.getAllByOwnerWithState(userId, State.fromString(state)));
    }
 
+   private void validateEndBeforeStartDate(BookingRequestDto dto) {
+      if (dto.getEnd().isBefore(dto.getStart())) {
+         throw new ShareItBadRequest("BookingController: End date can't be before Start");
+      }
+   }
 }
