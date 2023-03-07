@@ -23,13 +23,15 @@ import java.util.stream.Collectors;
 public class ItemController {
 
     private final ItemService itemService;
+    private final ItemMapper itemMapper;
+    private final CommentMapper commentMapper;
 
     @PostMapping
     public ItemResponseDto create(@Valid @RequestBody ItemDto itemDto,
                                   @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info(String.format("ItemController: create Item request. Data: %s", itemDto));
-        return ItemMapper.MAPPER.toItemDto(
-                itemService.create(ItemMapper.MAPPER.toItem(itemDto), userId));
+        return itemMapper.toItemDto(
+                itemService.create(itemMapper.toItem(itemDto), userId));
     }
 
     @PatchMapping("/{id}")
@@ -37,19 +39,19 @@ public class ItemController {
                           @RequestBody ItemDto itemDto,
                           @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info(String.format("ItemController: update Item with id: %d . Data: %s", id, itemDto));
-        return ItemMapper.MAPPER.toItemDto(
+        return itemMapper.toItemDto(
                 itemService.update(itemDto, id, userId));
     }
 
     @GetMapping("/{id}")
     public ItemResponseDto getItemById(@PathVariable("id") long id) {
-        return ItemMapper.MAPPER.toItemDto(itemService.getItemById(id));
+        return itemMapper.toItemDto(itemService.getItemById(id));
     }
 
     @GetMapping
     public List<ItemResponseDto> getItemsByUser(@RequestHeader("X-Sharer-User-Id") long userId) {
         return itemService.getItemsByUser(userId).stream()
-                .map(ItemMapper.MAPPER::toItemDto)
+                .map(itemMapper::toItemDto)
                 .collect(Collectors.toList());
     }
 
@@ -69,6 +71,6 @@ public class ItemController {
                         "ItemController: add COMMENT request from User with Id: %d for Item with Id: %d",
                         userId,
                         itemId));
-        return CommentMapper.MAPPER.toCommentResponseDto(itemService.addComment(userId, itemId, commentDto));
+        return commentMapper.toCommentResponseDto(itemService.addComment(userId, itemId, commentDto));
     }
 }

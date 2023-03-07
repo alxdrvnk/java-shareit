@@ -11,10 +11,8 @@ import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
 
-@Mapper
+@Mapper(componentModel = "spring")
 public interface CommentMapper {
-
-    CommentMapper MAPPER = Mappers.getMapper(CommentMapper.class);
 
     @Mapping(target = "id", ignore = true)
     Comment toComment(CommentRequestDto dto, User author, Item item, LocalDateTime created);

@@ -8,10 +8,8 @@ import ru.practicum.shareit.item.model.Item;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = {CommentMapper.class}, injectionStrategy = InjectionStrategy.FIELD)
 public interface ItemMapper {
-
-    ItemMapper MAPPER = Mappers.getMapper(ItemMapper.class);
 
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     Item updateItemFromDto(ItemDto itemDto, @MappingTarget Item.ItemBuilder item);

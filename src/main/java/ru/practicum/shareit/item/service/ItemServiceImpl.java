@@ -31,7 +31,8 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class ItemServiceImpl implements ItemService {
-
+    private final ItemMapper itemMapper;
+    private final CommentMapper commentMapper;
     private final ItemRepository itemRepository;
     private final UserService userService;
     private final BookingRepository bookingRepository;
@@ -48,7 +49,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Item update(ItemDto itemDto, long itemId, long userId) {
         Item actualItem = getItemByUser(userId, itemId);
-        Item item = ItemMapper.MAPPER.updateItemFromDto(itemDto, actualItem.toBuilder());
+        Item item = itemMapper.updateItemFromDto(itemDto, actualItem.toBuilder());
         return itemRepository.save(item);
     }
 
@@ -92,7 +93,7 @@ public class ItemServiceImpl implements ItemService {
         if (text.isBlank()) {
             return Collections.emptyList();
         }
-        return ItemMapper.MAPPER.toItemDtoList(itemRepository.searchByText(text));
+        return itemMapper.toItemDtoList(itemRepository.searchByText(text));
     }
 
     @Override
@@ -111,6 +112,6 @@ public class ItemServiceImpl implements ItemService {
        }
 
        return commentRepository.save(
-               CommentMapper.MAPPER.toComment(dto, user, item, LocalDateTime.now()));
+               commentMapper.toComment(dto, user, item, LocalDateTime.now()));
     }
 }
