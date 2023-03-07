@@ -107,6 +107,8 @@ class BookingServiceImpl implements BookingService {
         switch (state) {
             case ALL:
                 return bookingRepository.findAllByOwnerId(userId);
+            case PAST:
+                return bookingRepository.findAllByOwnerIdAndPastState(userId, LocalDateTime.now());
             case FUTURE:
                 return bookingRepository.findAllByOwnerIdAndFutureState(userId, LocalDateTime.now());
             case CURRENT:

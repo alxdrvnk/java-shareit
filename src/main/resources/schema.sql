@@ -39,6 +39,7 @@ CREATE TABLE IF NOT EXISTS comments (
                                      text VARCHAR NOT NULL,
                                      item_id INTEGER,
                                      author_id INTEGER,
+                                     created_date DATETIME,
                                      CONSTRAINT fk_comments_item_id FOREIGN KEY (item_id) REFERENCES items (id) ON DELETE CASCADE,
                                      CONSTRAINT fk_author_id FOREIGN KEY (author_id) REFERENCES users (id) ON DELETE CASCADE
 );

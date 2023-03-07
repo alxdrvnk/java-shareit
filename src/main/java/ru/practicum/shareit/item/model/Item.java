@@ -5,6 +5,7 @@ import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
 import javax.persistence.*;
+import java.util.List;
 
 @AllArgsConstructor
 @Entity
@@ -35,4 +36,7 @@ public class Item {
     @ManyToOne
     @JoinColumn(name = "request_id")
     ItemRequest request;
+
+    @OneToMany(mappedBy = "item")
+    List<Comment> comments;
 }
