@@ -3,6 +3,7 @@ package ru.practicum.shareit.item.dto;
 import lombok.Builder;
 import lombok.Value;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingItemDto;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
@@ -22,8 +23,6 @@ public class ItemResponseDto{
     Boolean available;
     User owner;
     ItemRequest request;
-    BookingDto prevBooking;
-    BookingDto nextBooking;
     List<CommentResponseDto> comments;
-
+    List<BookingItemDto> bookingList;
 }

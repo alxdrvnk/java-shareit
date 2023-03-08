@@ -19,6 +19,7 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class BookingController {
    private final BookingService bookingService;
+   private final BookingMapper mapper;
 
    @PostMapping
    public BookingDto create(@Valid @RequestBody BookingRequestDto bookingDto,
@@ -26,7 +27,7 @@ public class BookingController {
       log.info(String.format(
               "BookingController: create Booking request. Data: %s", bookingDto));
       validateEndBeforeStartDate(bookingDto);
-      return BookingMapper.MAPPER.toBookingDto(
+      return mapper.toBookingDto(
               bookingService.create(bookingDto, userId));
    }
 
@@ -36,7 +37,7 @@ public class BookingController {
                              @RequestHeader("X-Sharer-User-Id") long userId) {
       log.info(String.format(
               "BookingController: approve request for Booking with id: %d.", id));
-      return BookingMapper.MAPPER.toBookingDto(
+      return mapper.toBookingDto(
               bookingService.approve(id, userId, approved));
    }
 
@@ -45,7 +46,7 @@ public class BookingController {
                          @RequestHeader("X-Sharer-User-Id") long userId) {
       log.info(String.format(
               "BookingController: get Booking request by ID: %d", id));
-      return BookingMapper.MAPPER.toBookingDto(
+      return mapper.toBookingDto(
               bookingService.get(userId, id));
 
    }
@@ -55,8 +56,8 @@ public class BookingController {
                                             @RequestHeader("X-Sharer-User-Id") long userId) {
       log.info(String.format(
               "BookingController: get Booking request by State: %s", state));
-      return BookingMapper.MAPPER.toBookingDtoList(
-              bookingService.getAllByState(userId, State.valueOf(state)));
+      return mapper.toBookingDtoList(
+              bookingService.getAllByState(userId, State.fromString(state)));
    }
 
    @GetMapping("/owner")
@@ -65,7 +66,7 @@ public class BookingController {
       log.info(String.format(
               "BookingController: get Booking request by State: %s for User with ID: %d", state, userId));
 
-      return BookingMapper.MAPPER.toBookingDtoList(
+      return mapper.toBookingDtoList(
               bookingService.getAllByOwnerWithState(userId, State.fromString(state)));
    }
 

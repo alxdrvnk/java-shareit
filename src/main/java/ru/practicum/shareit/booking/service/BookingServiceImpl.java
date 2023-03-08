@@ -26,6 +26,8 @@ class BookingServiceImpl implements BookingService {
     private final ItemService itemService;
     private final UserService userService;
 
+    private final BookingMapper mapper;
+
     @Override
     public Booking create(BookingRequestDto bookingDto, long userId) {
         User user = userService.getUserBy(userId);
@@ -35,7 +37,7 @@ class BookingServiceImpl implements BookingService {
             throw new ShareItBadRequest(String.format("Item with Id: %d doesn't available", item.getId()));
         }
 
-        Booking booking = BookingMapper.MAPPER.toBooking(bookingDto, item, user, BookingStatus.WAITING);
+        Booking booking = mapper.toBooking(bookingDto, item, user, BookingStatus.WAITING);
         return bookingRepository.save(booking);
     }
 
@@ -86,9 +88,9 @@ class BookingServiceImpl implements BookingService {
             case ALL:
                 return bookingRepository.findAllByBookerIdOrderByStartDesc(userId);
             case PAST:
-                return bookingRepository.findAllByBookerIdAndEndBeforeOrderByStartDesc(userId, LocalDateTime.now());
+                return bookingRepository.findAllByBookerIdAndEndBefore(userId, LocalDateTime.now());
             case FUTURE:
-                return bookingRepository.findAllByBookerIdAndStartAfterOrderByStartDesc(userId, LocalDateTime.now());
+                return bookingRepository.findAllByBookerIdAndStartAfter(userId, LocalDateTime.now());
             case CURRENT:
                 return bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(
                         userId, LocalDateTime.now(), LocalDateTime.now());

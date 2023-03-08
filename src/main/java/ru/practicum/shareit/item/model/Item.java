@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.model;
 
 import lombok.*;
+import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
@@ -39,4 +40,7 @@ public class Item {
 
     @OneToMany(mappedBy = "item")
     List<Comment> comments;
+
+    @OneToMany(mappedBy = "item")
+    List<Booking> bookingList;
 }
