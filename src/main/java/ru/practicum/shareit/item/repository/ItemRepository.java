@@ -23,15 +23,19 @@ public interface ItemRepository extends JpaRepository<Item, Long> {
 
     Optional<Item> findByIdAndOwnerIdNot(long itemId, long userId);
 
-    @Query(value = "SELECT i.*, t.start_date, t.end_date FROM ITEMS i\n" +
-            "INNER JOIN\n" +
-            "((SELECT b.* FROM BOOKINGS b\n" +
-            "WHERE b.END_DATE  < ?2\n" +
-            "ORDER BY b.END_DATE DESC \n" +
-            "LIMIT 1)\n" +
-            "UNION ALL(\n" +
-            "SELECT b2.* FROM BOOKINGS b2 \n" +
-            "WHERE b2.START_DATE > ?2) LIMIT 1) AS t ON t.item_id = i.id\n" +
-            "WHERE i.OWNER_ID = ?1", nativeQuery = true)
+    @Query(value = "SELECT DISTINCT ON(id) * FROM (\n" +
+            "SELECT i.*,\n" +
+            "b.id AS prev_booking_id,\n" +
+            "b.start_date AS prev_booking_start,\n" +
+            "b.end_date AS prev_booking_end,\n" +
+            "b.booker_id AS prev_booking_booker_id,\n" +
+            "b2.id AS next_booking_id,\n" +
+            "b2.start_date AS next_booking_start,\n" +
+            "b2.end_date AS next_booking_end,\n" +
+            "b2.booker_id AS next_booking_booker_id FROM items i \n" +
+            "INNER JOIN BOOKINGS b ON b.item_id = i.id AND b.end_date <= ?2 AND b.STATUS = 'APPROVED'\n" +
+            "LEFT JOIN BOOKINGS b2 ON b2.item_id = i.id AND b2.start_date >= ?2 AND b2.STATUS = 'APPROVED'\n" +
+            "WHERE i.owner_id = ?1\n" +
+            "ORDER BY b.END_DATE DESC, b2.START_DATE ASC)", nativeQuery = true)
     List<Object> findByOwnerIdWithNextAndPrevBookings(long userId, LocalDateTime date);
 }
