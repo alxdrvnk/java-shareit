@@ -6,13 +6,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import ru.practicum.shareit.exceptions.error.ShareItError;
 
 import java.util.List;
 
 @Slf4j
 @ControllerAdvice
-public class ShareItExceptionHandler {
+public class ShareItExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = ShareItNotFoundException.class)
     public ResponseEntity<Object> handleNotFoundException(ShareItNotFoundException exception,

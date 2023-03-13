@@ -19,32 +19,28 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final UserMapper mapper;
 
     @PostMapping
     public UserDto create(@Valid @RequestBody UserDto user) {
         log.info(String.format("UserController: create User request. Data: %s", user));
-        return UserMapper.MAPPER.toUserDto(userService.create(UserMapper.MAPPER.toUser(user)));
+        return mapper.toUserDto(userService.create(mapper.toUser(user)));
     }
 
     @PatchMapping("/{id}")
     public UserDto update(@PathVariable("id") Long id, @RequestBody UserDto user) {
         log.info(String.format("UserController: update User with id: %d . Data: %s", id, user));
-        try {
-            return UserMapper.MAPPER.toUserDto(userService.update(user, id));
-        } catch (DataIntegrityViolationException e) {
-            throw new ShareItAlreadyExistsException("Update User Error: Email already exists");
-
-        }
+        return mapper.toUserDto(userService.update(user, id));
     }
 
     @GetMapping
     public List<UserDto> getAll() {
-        return UserMapper.MAPPER.toUserDtoList(userService.getAllUsers());
+        return mapper.toUserDtoList(userService.getAllUsers());
     }
 
     @GetMapping("/{id}")
     public UserDto getUserBy(@PathVariable("id") Long id) {
-        return UserMapper.MAPPER.toUserDto(userService.getUserBy(id));
+        return mapper.toUserDto(userService.getUserBy(id));
     }
 
     @DeleteMapping("/{id}")
