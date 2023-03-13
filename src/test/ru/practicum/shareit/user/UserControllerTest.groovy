@@ -20,13 +20,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@AutoConfigureMockMvc
 @SpringBootTest
 @Subject(UserController)
 class UserControllerTest extends Specification {
-
-    @Autowired
-    private MockMvc mvc
 
     private final ObjectMapper objectMapper = new ObjectMapper()
 

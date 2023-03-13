@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.github.springtestdbunit.annotation.DatabaseSetup
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -17,12 +18,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@AutoConfigureMockMvc
 @SpringBootTest
 class ItemControllerSpec extends Specification {
-
-    @Autowired
-    private MockMvc mvc
 
     private final ObjectMapper objectMapper = new ObjectMapper()
 

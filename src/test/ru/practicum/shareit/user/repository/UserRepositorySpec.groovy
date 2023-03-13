@@ -15,7 +15,7 @@ import spock.lang.Specification
 @DataJpaTest
 @ContextConfiguration(classes = DbUnitConfig.class)
 @TestExecutionListeners([TransactionDbUnitTestExecutionListener, DependencyInjectionTestExecutionListener])
-class ItemRepositorySpec extends Specification {
+class UserRepositorySpec extends Specification {
 
     @Autowired
     private UserRepository repository
