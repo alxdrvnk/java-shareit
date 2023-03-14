@@ -1,41 +1,42 @@
 <dataset>
     <PUBLIC.USERS
-            id = "1"
+            id="1"
             name="User1"
             email="user1@mail.mail"
     />
     <PUBLIC.USERS
-            id = "2"
-            name = "User2"
+            id="2"
+            name="User2"
             email="user2@mail.mail"
     />
+
     <PUBLIC.ITEMS
-            id = "1"
-            name = "Item_1_User_1"
-            description = "Item_1_User_1"
-            is_available = "True"
-            owner_id = "1"
+            id="1"
+            name="Item_1_User_1"
+            description="Item_1_User_1"
+            is_available="True"
+            owner_id="1"
     />
     <PUBLIC.ITEMS
-            id = "2"
-            name = "Item_2_User_2"
-            description = "Item_2_User_2"
-            is_available = "False"
-            owner_id = "2"
+            id="2"
+            name="Item_2_User_2"
+            description="Item_2_User_2"
+            is_available="False"
+            owner_id="2"
     />
     <PUBLIC.ITEMS
-            id = "3"
-            name = "Item_2_User_1"
-            description = "Item_2_User_1"
-            is_available = "False"
-            owner_id = "1"
+            id="3"
+            name="Item_2_User_1"
+            description="Item_2_User_1"
+            is_available="False"
+            owner_id="1"
     />
 
     <PUBLIC.COMMENTS
-            id = "1"
-            text = "Comment to Item 1"
-            item_id = "1"
-            author_id = "2"
-            created_date = "2023-03-1 12:00:00.000"
+            id="1"
+            text="Comment to Item 1"
+            item_id="1"
+            author_id="2"
+            created_date="2023-03-1 12:00:00.000"
     />
 </dataset>
