@@ -90,9 +90,9 @@ class BookingServiceImpl implements BookingService {
             case ALL:
                 return bookingRepository.findAllByBookerIdOrderByStartDesc(userId);
             case PAST:
-                return bookingRepository.findAllByBookerIdAndEndBefore(userId, LocalDateTime.now());
+                return bookingRepository.findAllByBookerIdAndEndBeforeOrderByStartDesc(userId, LocalDateTime.now());
             case FUTURE:
-                return bookingRepository.findAllByBookerIdAndStartAfter(userId, LocalDateTime.now());
+                return bookingRepository.findAllByBookerIdAndStartAfterOrderByStartDesc(userId, LocalDateTime.now());
             case CURRENT:
                 return bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(
                         userId, LocalDateTime.now(), LocalDateTime.now());
