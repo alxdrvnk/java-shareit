@@ -20,7 +20,7 @@ public class ItemResponseDtoTransformer implements ResultTransformer {
     @Override
     public Object transformTuple(Object[] tuple, String[] aliases) {
         Map<String, Integer> aliasToIndexMap = aliasToIndexMap(aliases);
-        Long itemResponseId =((BigInteger) tuple[aliasToIndexMap.get("cur_item_id")]).longValue();
+        Long itemResponseId = ((BigInteger) tuple[aliasToIndexMap.get("cur_item_id")]).longValue();
 
         BookingItemDto lastBooking = getBookingDto(
                 "last_booking_id",
