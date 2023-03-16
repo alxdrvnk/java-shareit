@@ -15,6 +15,7 @@ public interface ItemMapper {
     Item updateItemFromDto(ItemDto itemDto, @MappingTarget Item.ItemBuilder item);
 
     Item toItem(ItemDto itemDto);
+
     Item toItem(ItemResponseDto itemResponseDto);
 
     ItemResponseDto toItemDto(Item item);
