@@ -6,6 +6,7 @@ import ru.practicum.shareit.item.dto.CommentResponseDto;
 import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.user.model.User;
 
+import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -19,7 +20,7 @@ public class ItemResponseDtoTransformer implements ResultTransformer {
     @Override
     public Object transformTuple(Object[] tuple, String[] aliases) {
         Map<String, Integer> aliasToIndexMap = aliasToIndexMap(aliases);
-        Long itemResponseId = Long.valueOf((Integer) tuple[aliasToIndexMap.get("cur_item_id")]);
+        Long itemResponseId =((BigInteger) tuple[aliasToIndexMap.get("cur_item_id")]).longValue();
 
         BookingItemDto lastBooking = getBookingDto(
                 "last_booking_id",
@@ -132,7 +133,7 @@ public class ItemResponseDtoTransformer implements ResultTransformer {
         }
 
         return User.builder()
-                .id(Long.valueOf((Integer) tuple[aliasToIndexMap.get(idAlias)]))
+                .id(((BigInteger) tuple[aliasToIndexMap.get(idAlias)]).longValue())
                 .name((String) tuple[aliasToIndexMap.get(nameAlias)])
                 .email((String) tuple[aliasToIndexMap.get(emailAlias)])
                 .build();

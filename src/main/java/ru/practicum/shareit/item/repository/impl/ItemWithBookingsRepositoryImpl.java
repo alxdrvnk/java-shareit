@@ -20,7 +20,7 @@ public class ItemWithBookingsRepositoryImpl implements ItemWithBookingsRepositor
         String filter = "WHERE i.owner_id = :owner_id ";
 
         if (itemId != null) {
-            filter += "AND cur_item_id = " + itemId;
+            filter += "AND i.id = " + itemId;
         }
 
         return entityManager.createNativeQuery(
