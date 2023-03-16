@@ -22,7 +22,7 @@ public class Booking {
     LocalDateTime start;
     @Column(name = "end_date", nullable = false)
     LocalDateTime end;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "item_id", nullable = false)
     Item item;
     @ManyToOne

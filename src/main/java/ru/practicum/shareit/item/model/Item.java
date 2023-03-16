@@ -37,6 +37,6 @@ public class Item {
     @JoinColumn(name = "request_id")
     ItemRequest request;
 
-    @OneToMany(mappedBy = "item")
+    @OneToMany(mappedBy = "item", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Comment> comments;
 }

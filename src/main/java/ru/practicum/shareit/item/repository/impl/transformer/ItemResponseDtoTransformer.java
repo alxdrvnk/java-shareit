@@ -6,7 +6,6 @@ import ru.practicum.shareit.item.dto.CommentResponseDto;
 import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.user.model.User;
 
-import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -20,7 +19,7 @@ public class ItemResponseDtoTransformer implements ResultTransformer {
     @Override
     public Object transformTuple(Object[] tuple, String[] aliases) {
         Map<String, Integer> aliasToIndexMap = aliasToIndexMap(aliases);
-        Long itemResponseId = ((BigInteger) tuple[aliasToIndexMap.get("cur_item_id")]).longValue();
+        Long itemResponseId = Long.valueOf((Integer) tuple[aliasToIndexMap.get("cur_item_id")]);
 
         BookingItemDto lastBooking = getBookingDto(
                 "last_booking_id",
@@ -62,11 +61,11 @@ public class ItemResponseDtoTransformer implements ResultTransformer {
                         .comments(new ArrayList<>())
                         .build()
         );
-
-        List<CommentResponseDto> commentResponseDtoList = itemResponseDto.getComments();
-        commentResponseDtoList.add(comment);
-        itemResponseDto = itemResponseDto.withComments(commentResponseDtoList);
-
+        if (comment != null) {
+            List<CommentResponseDto> commentResponseDtoList = itemResponseDto.getComments();
+            commentResponseDtoList.add(comment);
+            itemResponseDto = itemResponseDto.withComments(commentResponseDtoList);
+        }
         return itemResponseDto;
     }
 
@@ -133,7 +132,7 @@ public class ItemResponseDtoTransformer implements ResultTransformer {
         }
 
         return User.builder()
-                .id(((BigInteger) tuple[aliasToIndexMap.get(idAlias)]).longValue())
+                .id(Long.valueOf((Integer) tuple[aliasToIndexMap.get(idAlias)]))
                 .name((String) tuple[aliasToIndexMap.get(nameAlias)])
                 .email((String) tuple[aliasToIndexMap.get(emailAlias)])
                 .build();
