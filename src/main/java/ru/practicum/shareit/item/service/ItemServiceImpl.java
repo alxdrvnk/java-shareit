@@ -6,11 +6,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
-import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.exceptions.ShareItBadRequest;
 import ru.practicum.shareit.exceptions.ShareItNotFoundException;
 import ru.practicum.shareit.item.dto.CommentRequestDto;
-import ru.practicum.shareit.item.dto.CommentResponseDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.item.mapper.CommentMapper;
@@ -53,11 +51,16 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.save(item);
     }
 
+    //
     @Override
-    public Item getItemById(long id) {
-        return itemRepository.findById(id).orElseThrow(
-                () -> new ShareItNotFoundException(
-                        String.format("Item with id: %s not found", id)));
+    public ItemResponseDto getItemById(long id, long userId) {
+        if(itemRepository.existsByIdAndOwnerId(id, userId))
+            return getItemForOwner(userId, id);
+        else {
+           return itemMapper.toItemDto(itemRepository.findById(id).orElseThrow(
+                    () -> new ShareItNotFoundException(
+                            String.format("Item with id: %s not found", id))));
+        }
     }
 
     @Override
@@ -76,9 +79,21 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<Item> getItemsByUser(long userId) {
-        var data = itemRepository.findByOwnerIdWithNextAndPrevBookings(userId, LocalDateTime.now());
-        return itemRepository.findByOwnerId(userId);
+    public List<ItemResponseDto> getItemsForOwner(long userId) {
+        return itemRepository.itemsWithNextAndPrevBookings(userId, LocalDateTime.now(), null);
+    }
+
+    @Override
+    public ItemResponseDto getItemForOwner(long userId, long itemId) {
+        List<ItemResponseDto> items =
+                itemRepository.itemsWithNextAndPrevBookings(userId, LocalDateTime.now(), itemId);
+
+        if (items.isEmpty()) {
+            throw new ShareItNotFoundException(
+                        String.format("Item with id: %d not found", itemId));
+        }
+
+        return items.get(0);
     }
 
     @Transactional
@@ -99,7 +114,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public Comment addComment(long userId, long itemId, CommentRequestDto dto) {
         User user = userService.getUserBy(userId);
-        Item item = getItemById(itemId);
+        Item item = itemMapper.toItem(getItemById(itemId, userId));
         List<Booking> bookings =  bookingRepository.findAllByBookerIdAndItemId(userId, itemId);
 
        if (bookings.isEmpty()) {

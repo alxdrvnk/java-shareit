@@ -12,7 +12,6 @@ import ru.practicum.shareit.booking.model.BookingStatus
 import ru.practicum.shareit.configuration.DbUnitConfig
 import spock.lang.Specification
 
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 @DataJpaTest

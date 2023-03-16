@@ -44,16 +44,14 @@ public class ItemController {
     }
 
     @GetMapping("/{id}")
-    public ItemResponseDto getItemById(@PathVariable("id") long id) {
-        return itemMapper.toItemDto(itemService.getItemById(id));
+    public ItemResponseDto getItemById(@PathVariable("id") long id,
+                                       @RequestHeader("X-Shared-User-Id") long userId) {
+        return itemService.getItemById(id, userId);
     }
 
     @GetMapping
     public List<ItemResponseDto> getItemsByUser(@RequestHeader("X-Sharer-User-Id") long userId) {
-        var items = itemService.getItemsByUser(userId);
-        return itemService.getItemsByUser(userId).stream()
-                .map(itemMapper::toItemDto)
-                .collect(Collectors.toList());
+        return itemService.getItemsForOwner(userId);
     }
 
     @GetMapping("/search")

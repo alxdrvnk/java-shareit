@@ -69,7 +69,7 @@ class ItemRepositorySpec extends Specification {
             name == ["Item_1_User_1", "Item_2_User_1"]
             description == ["Item_1_User_1", "Item_2_User_1"]
             available == [true, false]
-            it.owner.id == [1,1]
+            it.owner.id == [1L,1L]
             it.owner.name == ["User1", "User1"]
             it.owner.email == ["user1@mail.mail", "user1@mail.mail"]
         }
@@ -92,12 +92,22 @@ class ItemRepositorySpec extends Specification {
             name == ["Item_2_User_1"]
             description == ["Item_2_User_1"]
             available == [false]
-            it.owner.id == [1]
+            it.owner.id == [1L]
             it.owner.name == ["User1"]
             it.owner.email == ["user1@mail.mail"]
         }
     }
 
+    @DatabaseSetup(value = "classpath:database/set_item_bookings_comments.xml", connection = "dbUnitDatabaseConnection")
+    def "Should return Items by owner with last booking and next booking" () {
+        when:
+        def items =
+                repository.itemsWithNextAndPrevBookings(1,
+                        LocalDateTime.of(2023,3,3,12,0,0), null)
 
-
+        then:
+        with(items) {
+            id == [1, 3, 4]
+        }
+    }
 }

@@ -27,15 +27,14 @@ public class UserServiceImpl implements UserService {
     @Transactional(rollbackFor = ShareItAlreadyExistsException.class)
     @Override
     public User create(User user) {
-//        validateEmail(user.getEmail());
-        User userDb;
-        try {
-           userDb = userRepository.save(user);
-        } catch (Exception e) {
-            log.error("Failed to create User {}", user);
-            throw new ShareItAlreadyExistsException("Create User Error: email already exists");
-        }
-        return userDb;
+//        User userDb;
+//        try {
+//            userDb = userRepository.save(user);
+//        } catch (Exception e) {
+//            log.error("Failed to create User {}", user);
+//            throw new ShareItAlreadyExistsException("Create User Error: email already exists");
+//        }
+        return userRepository.save(user);
     }
 
     @Transactional

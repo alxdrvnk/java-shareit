@@ -19,6 +19,6 @@ public class User {
     @Column(name = "name")
     String name;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     String email;
 }

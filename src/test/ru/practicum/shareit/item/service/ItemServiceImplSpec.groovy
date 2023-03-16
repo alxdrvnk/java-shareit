@@ -70,7 +70,7 @@ class ItemServiceImplSpec extends Specification {
                 commentRepository)
 
         when:
-        service.getItemById(9999)
+        service.getItemById(9999, 0)
 
         then:
         thrown(ShareItNotFoundException)
