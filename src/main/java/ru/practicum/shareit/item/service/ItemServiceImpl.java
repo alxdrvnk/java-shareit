@@ -51,13 +51,12 @@ public class ItemServiceImpl implements ItemService {
         return itemRepository.save(item);
     }
 
-    //
     @Override
     public ItemResponseDto getItemById(long id, long userId) {
-        if(itemRepository.existsByIdAndOwnerId(id, userId))
+        if (itemRepository.existsByIdAndOwnerId(id, userId))
             return getItemForOwner(userId, id);
         else {
-           return itemMapper.toItemDto(itemRepository.findById(id).orElseThrow(
+            return itemMapper.toItemDto(itemRepository.findById(id).orElseThrow(
                     () -> new ShareItNotFoundException(
                             String.format("Item with id: %s not found", id))));
         }

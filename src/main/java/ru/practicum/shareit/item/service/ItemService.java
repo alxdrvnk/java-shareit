@@ -21,6 +21,7 @@ public interface ItemService {
     Item getItemNotOwnedByUser(long userId, long itemId);
 
     List<ItemResponseDto> getItemsForOwner(long userId);
+
     ItemResponseDto getItemForOwner(long userId, long itemId);
 
     void deleteItemById(long itemId, long userId);

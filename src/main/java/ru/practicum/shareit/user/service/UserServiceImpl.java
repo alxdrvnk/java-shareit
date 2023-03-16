@@ -7,13 +7,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exceptions.ShareItAlreadyExistsException;
 import ru.practicum.shareit.exceptions.ShareItNotFoundException;
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.mapper.UserMapper;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 @Slf4j
 @Service
@@ -70,11 +69,6 @@ public class UserServiceImpl implements UserService {
         } catch (IllegalArgumentException e) {
             throw new ShareItNotFoundException(
                     String.format("User with Id: %d not found", id));
-        }
-    }
-    private void validateEmail(String email) {
-        if (userRepository.existsByEmail(email)) {
-            throw new ShareItAlreadyExistsException("Email already exists");
         }
     }
 }

@@ -11,10 +11,8 @@ import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.service.ItemService;
 
-import javax.persistence.PreUpdate;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController

@@ -13,7 +13,7 @@ import java.util.List;
 
 @Value
 @Builder
-public class ItemResponseDto{
+public class ItemResponseDto {
     Long id;
     @NotBlank
     String name;

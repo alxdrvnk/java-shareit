@@ -1,7 +1,6 @@
 package ru.practicum.shareit.item.dto;
 
 import lombok.Builder;
-import lombok.Getter;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 import ru.practicum.shareit.request.model.ItemRequest;
