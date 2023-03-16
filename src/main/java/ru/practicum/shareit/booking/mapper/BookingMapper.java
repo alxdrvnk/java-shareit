@@ -10,6 +10,8 @@ import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.List;
 
@@ -29,4 +31,7 @@ public interface BookingMapper {
     @Mapping(target = "endDate", source = "end")
     BookingItemDto toBookingItemDto(Booking booking);
 
+    default LocalDateTime fromInstant(LocalDateTime instant) {
+        return instant == null ? null :  instant.truncatedTo(ChronoUnit.SECONDS);
+    }
 }

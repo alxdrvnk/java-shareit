@@ -7,6 +7,7 @@ import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.user.model.User;
 
 import java.sql.Timestamp;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -117,7 +118,8 @@ public class ItemResponseDtoTransformer implements ResultTransformer {
                 .id(Long.valueOf((Integer) tuple[aliasToIndexMap.get(idAlias)]))
                 .authorName((String) tuple[aliasToIndexMap.get(authorAlias)])
                 .text((String) tuple[aliasToIndexMap.get(textAlias)])
-                .created(((Timestamp) tuple[aliasToIndexMap.get(createDateAlias)]).toLocalDateTime())
+                .created(((Timestamp) tuple[aliasToIndexMap.get(createDateAlias)])
+                        .toLocalDateTime().truncatedTo(ChronoUnit.SECONDS))
                 .build();
     }
 

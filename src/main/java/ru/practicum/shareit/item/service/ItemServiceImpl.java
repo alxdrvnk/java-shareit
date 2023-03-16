@@ -21,6 +21,7 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
 
@@ -126,6 +127,6 @@ public class ItemServiceImpl implements ItemService {
        }
 
        return commentRepository.save(
-               commentMapper.toComment(dto, user, item, LocalDateTime.now()));
+               commentMapper.toComment(dto, user, item, LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
     }
 }

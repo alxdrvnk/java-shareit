@@ -32,7 +32,9 @@ class BookingServiceImpl implements BookingService {
     public Booking create(BookingRequestDto bookingDto, long userId) {
         User user = userService.getUserBy(userId);
         Item item = itemService.getItemNotOwnedByUser(userId, bookingDto.getItemId());
-
+        if (bookingDto.getEnd().isEqual(bookingDto.getStart())) {
+            throw new ShareItBadRequest("Start date and End date can't be equal");
+        }
         if (!item.isAvailable()) {
             throw new ShareItBadRequest(String.format("Item with Id: %d doesn't available", item.getId()));
         }
