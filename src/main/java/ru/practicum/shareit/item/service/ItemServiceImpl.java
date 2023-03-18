@@ -80,13 +80,15 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemResponseDto> getItemsForOwner(long userId) {
-        return itemRepository.itemsWithNextAndPrevBookings(userId, LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), null);
+        return itemRepository.itemsWithNextAndPrevBookings(userId,
+                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), null);
     }
 
     @Override
     public ItemResponseDto getItemForOwner(long userId, long itemId) {
         List<ItemResponseDto> items =
-                itemRepository.itemsWithNextAndPrevBookings(userId, LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), itemId);
+                itemRepository.itemsWithNextAndPrevBookings(userId,
+                        LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), itemId);
 
         if (items.isEmpty()) {
             throw new ShareItNotFoundException(

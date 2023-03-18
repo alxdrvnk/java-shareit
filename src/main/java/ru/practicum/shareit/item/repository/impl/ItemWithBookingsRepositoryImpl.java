@@ -66,7 +66,9 @@ public class ItemWithBookingsRepositoryImpl implements ItemWithBookingsRepositor
                         "LEFT JOIN " +
                             "BOOKINGS AS last_booking " +
                                 "ON last_booking.item_id = i.id " +
-                                "AND last_booking.end_date <= :date " +
+                                "AND (last_booking.end_date <= :date " +
+                                     "OR (last_booking.start_date < :date " +
+                                            "AND last_booking.end_date > :date))" +
                                 "AND last_booking.STATUS = 'APPROVED' " +
                         "LEFT JOIN " +
                             "BOOKINGS AS next_booking " +
