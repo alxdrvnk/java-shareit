@@ -58,8 +58,8 @@ public class ShareItExceptionHandler extends ResponseEntityExceptionHandler {
 
     //Пришлось добавить еще один тип ошибки,
     // так как тестам нужна именно такая сигнатура ответа при ошибке UNSUPPORTED_STATUS
-    @ExceptionHandler(value = ShareItUnsuportedStatus.class)
-    public ResponseEntity<Object> handleUnsuportedStatusException(ShareItUnsuportedStatus exception,
+    @ExceptionHandler(value = ShareItUnsupportedStatus.class)
+    public ResponseEntity<Object> handleUnsuportedStatusException(ShareItUnsupportedStatus exception,
                                                                   WebRequest request) {
         ShareItSingleError error = ShareItSingleError.builder()
                 .state(HttpStatus.BAD_REQUEST.value())
