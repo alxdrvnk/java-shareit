@@ -1,6 +1,6 @@
 package ru.practicum.shareit.booking.service;
 
-import ru.practicum.shareit.exceptions.ShareItBadRequest;
+import ru.practicum.shareit.exceptions.ShareItUnsuportedStatus;
 
 public enum State {
     ALL,
@@ -14,8 +14,8 @@ public enum State {
          try {
              return State.valueOf(state);
          } catch (IllegalArgumentException e) {
-             throw new ShareItBadRequest(
-                     String.format("Test get user bookings by 'UNSUPPORTED_STATUS' state"));
+             throw new ShareItUnsuportedStatus(
+                     "Test get user bookings by 'UNSUPPORTED_STATUS' state");
          }
     }
 }

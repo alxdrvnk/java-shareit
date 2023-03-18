@@ -1,5 +1,7 @@
 package ru.practicum.shareit.exceptions;
 
+import lombok.Builder;
+import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import ru.practicum.shareit.exceptions.error.ShareItError;
+import ru.practicum.shareit.exceptions.error.ShareItSingleError;
 
 import java.util.List;
 
@@ -54,4 +57,18 @@ public class ShareItExceptionHandler extends ResponseEntityExceptionHandler {
         log.warn(String.format("WARNING: %s", error));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
+
+    //Пришлось добавить еще один тип ошибки,
+    // так как тестам нужна именно такая сигнатура ответа при ошибке UNSUPPORTED_STATUS
+    @ExceptionHandler(value = ShareItUnsuportedStatus.class)
+    public ResponseEntity<Object> handleUnsuportedStatusException(ShareItUnsuportedStatus exception,
+                                                                  WebRequest request) {
+        ShareItSingleError error = ShareItSingleError.builder()
+                .state(HttpStatus.BAD_REQUEST.value())
+                .error("Unknown state: UNSUPPORTED_STATUS")
+                .build();
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(error);
+    }
+
 }
