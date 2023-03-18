@@ -122,11 +122,11 @@ public class ItemServiceImpl implements ItemService {
                    String.format("User with Id: %d don't booking Item with Id: %d", userId, itemId));
        }
 
-       if (bookings.stream().findFirst().get().getEnd().isAfter(LocalDateTime.now())) {
+       if (bookings.get(0).getEnd().isAfter(LocalDateTime.now())) {
            throw new ShareItBadRequest("Booking time not ended");
        }
 
        return commentRepository.save(
-               commentMapper.toComment(dto, user, item, LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)));
+               commentMapper.toComment(dto, user, item, LocalDateTime.now().plusSeconds(1)));
     }
 }
