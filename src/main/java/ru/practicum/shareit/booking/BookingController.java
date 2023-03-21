@@ -13,7 +13,7 @@ import ru.practicum.shareit.exceptions.ShareItBadRequest;
 import javax.validation.Valid;
 import java.util.Collection;
 
-@Slf4j
+@Slf4j(topic = "BookingController")
 @RestController
 @RequestMapping(path = "/bookings")
 @RequiredArgsConstructor
@@ -25,7 +25,7 @@ public class BookingController {
    public BookingDto create(@Valid @RequestBody BookingRequestDto bookingDto,
                             @RequestHeader("X-Sharer-User-Id") long userId) {
       log.info(String.format(
-              "BookingController: create Booking request. Data: %s", bookingDto));
+              "Create Booking request. Data: %s", bookingDto));
       validateEndBeforeStartDate(bookingDto);
       return mapper.toBookingDto(
               bookingService.create(bookingDto, userId));
@@ -36,7 +36,7 @@ public class BookingController {
                              @RequestParam boolean approved,
                              @RequestHeader("X-Sharer-User-Id") long userId) {
       log.info(String.format(
-              "BookingController: approve request for Booking with id: %d.", id));
+              "Approve request for Booking with id: %d.", id));
       return mapper.toBookingDto(
               bookingService.approve(id, userId, approved));
    }
@@ -45,7 +45,7 @@ public class BookingController {
    public BookingDto get(@PathVariable("id") long id,
                          @RequestHeader("X-Sharer-User-Id") long userId) {
       log.info(String.format(
-              "BookingController: get Booking request by ID: %d", id));
+              "Get Booking request by ID: %d", id));
       return mapper.toBookingDto(
               bookingService.get(userId, id));
 
@@ -55,7 +55,7 @@ public class BookingController {
    public Collection<BookingDto> getByState(@RequestParam(defaultValue = "ALL") String state,
                                             @RequestHeader("X-Sharer-User-Id") long userId) {
       log.info(String.format(
-              "BookingController: get Booking request by State: %s", state));
+              "Get Booking request by State: %s", state));
       return mapper.toBookingDtoList(
               bookingService.getAllByState(userId, State.fromString(state)));
    }
@@ -64,7 +64,7 @@ public class BookingController {
    public Collection<BookingDto> getByOwnerWithSatet(@RequestParam(defaultValue = "ALL") String state,
                                                      @RequestHeader("X-Sharer-User-Id") long userId) {
       log.info(String.format(
-              "BookingController: get Booking request by State: %s for User with ID: %d", state, userId));
+              "Get Booking request by State: %s for User with ID: %d", state, userId));
 
       return mapper.toBookingDtoList(
               bookingService.getAllByOwnerWithState(userId, State.fromString(state)));
@@ -72,7 +72,7 @@ public class BookingController {
 
    private void validateEndBeforeStartDate(BookingRequestDto dto) {
       if (dto.getEnd().isBefore(dto.getStart())) {
-         throw new ShareItBadRequest("BookingController: End date can't be before Start");
+         throw new ShareItBadRequest("End date can't be before Start");
       }
    }
 }

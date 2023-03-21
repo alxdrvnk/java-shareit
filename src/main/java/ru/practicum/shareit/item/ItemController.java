@@ -14,7 +14,7 @@ import ru.practicum.shareit.item.service.ItemService;
 import javax.validation.Valid;
 import java.util.List;
 
-@Slf4j
+@Slf4j(topic = "ItemController: ")
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
@@ -27,7 +27,7 @@ public class ItemController {
     @PostMapping
     public ItemResponseDto create(@Valid @RequestBody ItemDto itemDto,
                                   @RequestHeader("X-Sharer-User-Id") long userId) {
-        log.info(String.format("ItemController: create Item request. Data: %s", itemDto));
+        log.info(String.format("Create Item request. Data: %s", itemDto));
         return itemMapper.toItemDto(
                 itemService.create(itemMapper.toItem(itemDto), userId));
     }
@@ -36,7 +36,7 @@ public class ItemController {
     public ItemResponseDto update(@PathVariable("id") long id,
                           @RequestBody ItemDto itemDto,
                           @RequestHeader("X-Sharer-User-Id") long userId) {
-        log.info(String.format("ItemController: update Item with id: %d . Data: %s", id, itemDto));
+        log.info(String.format("Update Item with id: %d . Data: %s", id, itemDto));
         return itemMapper.toItemDto(
                 itemService.update(itemDto, id, userId));
     }
@@ -55,7 +55,7 @@ public class ItemController {
     @GetMapping("/search")
     public List<ItemResponseDto> findByNameAndDescription(@RequestHeader("X-Sharer-User-Id") long userId,
                                                   @RequestParam String text) {
-        log.info(String.format("ItemController: search Item request wiht text: \"%s\"", text));
+        log.info(String.format("Search Item request with text: \"%s\"", text));
         return itemService.getByText(userId, text);
     }
 
@@ -65,7 +65,7 @@ public class ItemController {
                                          @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info(
                 String.format(
-                        "ItemController: add COMMENT request from User with Id: %d for Item with Id: %d",
+                        "Add COMMENT request from User with Id: %d for Item with Id: %d",
                         userId,
                         itemId));
         return commentMapper.toCommentResponseDto(itemService.addComment(userId, itemId, commentDto));

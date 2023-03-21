@@ -47,7 +47,7 @@ class BookingServiceImpl implements BookingService {
     public Booking approve(long id, long userId, boolean approved) {
         User user = userService.getUserBy(userId);
         Booking booking = bookingRepository.findById(id).orElseThrow(
-                () -> new ShareItNotFoundException(String.format("Booking with Id:%s not found", id)));
+                () -> new ShareItNotFoundException(String.format("Booking with Id: %s not found", id)));
 
         if (!booking.getItem().getOwner().getId().equals(user.getId())) {
             throw new ShareItNotFoundException(
@@ -70,7 +70,6 @@ class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking get(long userId, long id) {
-        userService.getUserBy(userId);
         Booking booking = bookingRepository.findById(id).orElseThrow(
                 () -> new ShareItNotFoundException(
                         String.format("Booking with Id: %d not found", id)));
@@ -85,7 +84,6 @@ class BookingServiceImpl implements BookingService {
 
     @Override
     public List<Booking> getAllByState(long userId, State state) {
-        userService.getUserBy(userId);
         switch (state) {
             case ALL:
                 return bookingRepository.findAllByBookerIdOrderByStartDesc(userId);

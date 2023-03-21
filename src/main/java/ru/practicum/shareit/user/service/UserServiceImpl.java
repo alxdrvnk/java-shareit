@@ -14,7 +14,7 @@ import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.util.List;
 
-@Slf4j
+@Slf4j(topic = "UserService")
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -26,13 +26,6 @@ public class UserServiceImpl implements UserService {
     @Transactional(rollbackFor = ShareItAlreadyExistsException.class)
     @Override
     public User create(User user) {
-//        User userDb;
-//        try {
-//            userDb = userRepository.save(user);
-//        } catch (Exception e) {
-//            log.error("Failed to create User {}", user);
-//            throw new ShareItAlreadyExistsException("Create User Error: email already exists");
-//        }
         return userRepository.save(user);
     }
 
@@ -45,7 +38,7 @@ public class UserServiceImpl implements UserService {
             user = userRepository.save(user);
         } catch (DataIntegrityViolationException e) {
             log.error("Failed to update User with Id {}", userId);
-            throw new ShareItAlreadyExistsException("Update User Error: Email already exists");
+            throw new ShareItAlreadyExistsException("Update User Error: mail already exists");
         }
         return user;
     }

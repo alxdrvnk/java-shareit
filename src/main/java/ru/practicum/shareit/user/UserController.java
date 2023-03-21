@@ -10,7 +10,7 @@ import ru.practicum.shareit.user.service.UserService;
 import javax.validation.Valid;
 import java.util.List;
 
-@Slf4j
+@Slf4j(topic = "UserController")
 @RestController
 @RequestMapping(path = "/users")
 @RequiredArgsConstructor
@@ -21,13 +21,13 @@ public class UserController {
 
     @PostMapping
     public UserDto create(@Valid @RequestBody UserDto user) {
-        log.info(String.format("UserController: create User request. Data: %s", user));
+        log.info(String.format("Create User request. Data: %s", user));
         return mapper.toUserDto(userService.create(mapper.toUser(user)));
     }
 
     @PatchMapping("/{id}")
     public UserDto update(@PathVariable("id") Long id, @RequestBody UserDto user) {
-        log.info(String.format("UserController: update User with id: %d . Data: %s", id, user));
+        log.info(String.format("Update User with id: %d . Data: %s", id, user));
         return mapper.toUserDto(userService.update(user, id));
     }
 
@@ -44,7 +44,7 @@ public class UserController {
     @DeleteMapping("/{id}")
     public void deleteUserBy(@PathVariable("id") Long id) {
         userService.deleteUserBy(id);
-        log.info(String.format("UserController: Remove User with id: %d", id));
+        log.info(String.format("Remove User with id: %d", id));
     }
 }
 

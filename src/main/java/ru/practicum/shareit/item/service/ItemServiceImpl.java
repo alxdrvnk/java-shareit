@@ -25,10 +25,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.List;
 
-@Slf4j
+@Slf4j(topic = "ItemService")
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class ItemServiceImpl implements ItemService {
     private final ItemMapper itemMapper;
     private final CommentMapper commentMapper;
@@ -37,7 +36,6 @@ public class ItemServiceImpl implements ItemService {
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
 
-    @Transactional
     @Override
     public Item create(Item item, long userId) {
         User user = userService.getUserBy(userId);
@@ -53,6 +51,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ItemResponseDto getItemById(long id, long userId) {
         if (itemRepository.existsByIdAndOwnerId(id, userId))
             return getItemForOwner(userId, id);
