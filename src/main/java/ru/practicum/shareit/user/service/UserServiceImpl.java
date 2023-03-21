@@ -17,13 +17,11 @@ import java.util.List;
 @Slf4j(topic = "UserService")
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserMapper mapper;
 
-    @Transactional(rollbackFor = ShareItAlreadyExistsException.class)
     @Override
     public User create(User user) {
         return userRepository.save(user);

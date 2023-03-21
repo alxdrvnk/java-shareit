@@ -6,6 +6,7 @@ import ru.practicum.shareit.booking.model.BookingStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
 
@@ -51,4 +52,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "ORDER BY b.start DESC")
     List<Booking> findAllByOwnerIdAndStatus(long userId, BookingStatus status);
 
+    @Query("SELECT b FROM Booking As b " +
+            "WHERE b.id = :id " +
+            "AND (b.booker.id = :userId OR b.item.owner.id = :userId)")
+    Optional<Booking> findByIdAndUserId(long id, long userId);
 }

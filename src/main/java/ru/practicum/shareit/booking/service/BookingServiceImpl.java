@@ -70,16 +70,9 @@ class BookingServiceImpl implements BookingService {
 
     @Override
     public Booking get(long userId, long id) {
-        Booking booking = bookingRepository.findById(id).orElseThrow(
-                () -> new ShareItNotFoundException(
-                        String.format("Booking with Id: %d not found", id)));
-
-        if (booking.getBooker().getId() != userId && booking.getItem().getOwner().getId() != userId) {
-            throw new ShareItNotFoundException(
-                    String.format("User with Id: %d is not owner or booker Item with Id: %d", userId, id));
-        }
-
-        return booking;
+        return bookingRepository.findByIdAndUserId(id, userId).orElseThrow(
+                () ->  new ShareItNotFoundException(
+                        String.format("User with Id: %d is not owner or booker Item with Id: %d", userId, id)));
     }
 
     @Override
