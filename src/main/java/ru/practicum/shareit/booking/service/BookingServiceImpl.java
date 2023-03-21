@@ -2,11 +2,13 @@ package ru.practicum.shareit.booking.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.repository.BookingRepository;
+import ru.practicum.shareit.booking.service.provider.BookingProviderSelector;
 import ru.practicum.shareit.exceptions.ShareItBadRequest;
 import ru.practicum.shareit.exceptions.ShareItNotFoundException;
 import ru.practicum.shareit.item.model.Item;
@@ -14,9 +16,7 @@ import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
+import java.util.Collection;
 
 @Service
 @RequiredArgsConstructor
@@ -25,7 +25,7 @@ class BookingServiceImpl implements BookingService {
     private final BookingRepository bookingRepository;
     private final ItemService itemService;
     private final UserService userService;
-
+    private final BookingProviderSelector bookingProviderSelector;
     private final BookingMapper mapper;
 
     @Override
@@ -44,6 +44,7 @@ class BookingServiceImpl implements BookingService {
     }
 
     @Override
+    @Transactional
     public Booking approve(long id, long userId, boolean approved) {
         User user = userService.getUserBy(userId);
         Booking booking = bookingRepository.findById(id).orElseThrow(
@@ -76,45 +77,12 @@ class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<Booking> getAllByState(long userId, State state) {
-        switch (state) {
-            case ALL:
-                return bookingRepository.findAllByBookerIdOrderByStartDesc(userId);
-            case PAST:
-                return bookingRepository.findAllByBookerIdAndEndBeforeOrderByStartDesc(userId, LocalDateTime.now());
-            case FUTURE:
-                return bookingRepository.findAllByBookerIdAndStartAfterOrderByStartDesc(userId, LocalDateTime.now());
-            case CURRENT:
-                return bookingRepository.findAllByBookerIdAndStartBeforeAndEndAfterOrderByStartDesc(
-                        userId, LocalDateTime.now(), LocalDateTime.now());
-            case WAITING:
-                return bookingRepository.findAllByBookerIdAndStatusIsOrderByStartDesc(userId, BookingStatus.WAITING);
-            case REJECTED:
-                return bookingRepository.findAllByBookerIdAndStatusIsOrderByStartDesc(userId, BookingStatus.REJECTED);
-            default:
-                return Collections.emptyList();
-        }
+    public Collection<Booking> getAllByState(long userId, BookingState bookingState) {
+        return bookingProviderSelector.getBookingsOfUser(userId, bookingState.name());
     }
 
     @Override
-    public List<Booking> getAllByOwnerWithState(long userId, State state) {
-        userService.getUserBy(userId);
-        switch (state) {
-            case ALL:
-                return bookingRepository.findAllByOwnerId(userId);
-            case PAST:
-                return bookingRepository.findAllByOwnerIdAndPastState(userId, LocalDateTime.now());
-            case FUTURE:
-                return bookingRepository.findAllByOwnerIdAndFutureState(userId, LocalDateTime.now());
-            case CURRENT:
-                return bookingRepository.findAllByOwnerIdAndCurrentState(
-                        userId, LocalDateTime.now());
-            case WAITING:
-                return bookingRepository.findAllByOwnerIdAndStatus(userId, BookingStatus.WAITING);
-            case REJECTED:
-                return bookingRepository.findAllByOwnerIdAndStatus(userId, BookingStatus.REJECTED);
-            default:
-                return Collections.emptyList();
-        }
+    public Collection<Booking> getAllByOwnerWithState(long userId, BookingState bookingState) {
+        return bookingProviderSelector.getBookingsOfOwnerItems(userId, bookingState.name());
     }
 }

@@ -13,7 +13,6 @@ import ru.practicum.shareit.user.model.User;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
-import java.util.List;
 
 @Mapper(componentModel = "spring")
 public interface BookingMapper {
@@ -24,7 +23,7 @@ public interface BookingMapper {
 
     BookingDto toBookingDto(Booking booking);
 
-    Collection<BookingDto> toBookingDtoList(List<Booking> allByState);
+    Collection<BookingDto> toBookingDtoList(Collection<Booking> allByState);
 
     @Mapping(target = "bookerId", source = "booker.id")
     @Mapping(target = "startDate", source = "start")

@@ -7,7 +7,7 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.booking.service.State;
+import ru.practicum.shareit.booking.service.BookingState;
 import ru.practicum.shareit.exceptions.ShareItBadRequest;
 
 import javax.validation.Valid;
@@ -57,7 +57,7 @@ public class BookingController {
       log.info(String.format(
               "Get Booking request by State: %s", state));
       return mapper.toBookingDtoList(
-              bookingService.getAllByState(userId, State.fromString(state)));
+              bookingService.getAllByState(userId, BookingState.fromString(state)));
    }
 
    @GetMapping("/owner")
@@ -67,7 +67,7 @@ public class BookingController {
               "Get Booking request by State: %s for User with ID: %d", state, userId));
 
       return mapper.toBookingDtoList(
-              bookingService.getAllByOwnerWithState(userId, State.fromString(state)));
+              bookingService.getAllByOwnerWithState(userId, BookingState.fromString(state)));
    }
 
    private void validateEndBeforeStartDate(BookingRequestDto dto) {

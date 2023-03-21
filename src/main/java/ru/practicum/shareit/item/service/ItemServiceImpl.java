@@ -51,7 +51,6 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public ItemResponseDto getItemById(long id, long userId) {
         if (itemRepository.existsByIdAndOwnerId(id, userId))
             return getItemForOwner(userId, id);
@@ -113,6 +112,7 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
+    @Transactional
     public Comment addComment(long userId, long itemId, CommentRequestDto dto) {
         User user = userService.getUserBy(userId);
         Item item = itemMapper.toItem(getItemById(itemId, userId));
