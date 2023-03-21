@@ -61,7 +61,7 @@ public class BookingController {
    }
 
    @GetMapping("/owner")
-   public Collection<BookingDto> getByOwnerWithSatet(@RequestParam(defaultValue = "ALL") String state,
+   public Collection<BookingDto> getByOwnerWithState(@RequestParam(defaultValue = "ALL") String state,
                                                      @RequestHeader("X-Sharer-User-Id") long userId) {
       log.info(String.format(
               "Get Booking request by State: %s for User with ID: %d", state, userId));

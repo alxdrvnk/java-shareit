@@ -15,7 +15,7 @@ public enum State {
              return State.valueOf(state);
          } catch (IllegalArgumentException e) {
              throw new ShareItUnsupportedStatus(
-                     "Test get user bookings by 'UNSUPPORTED_STATUS' state");
+                     String.format("Booking doesn't support '%s' state",state));
          }
     }
 }
