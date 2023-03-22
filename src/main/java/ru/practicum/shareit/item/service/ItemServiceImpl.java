@@ -131,6 +131,6 @@ public class ItemServiceImpl implements ItemService {
         }
 
         return commentRepository.save(
-                commentMapper.toComment(dto, user, item, LocalDateTime.now(clock)));
+                commentMapper.toComment(dto, user, item, LocalDateTime.now(clock).plusSeconds(1L)));
     }
 }
