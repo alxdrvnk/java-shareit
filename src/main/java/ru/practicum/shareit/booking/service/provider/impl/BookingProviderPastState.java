@@ -12,8 +12,8 @@ import java.util.Collection;
 @RequiredArgsConstructor
 public class BookingProviderPastState implements BookingProvider {
 
+    private final Clock clock;
     private final BookingRepository bookingRepository;
-    private final Clock clock = Clock.systemUTC();
 
     @Override
     public Collection<Booking> getBookingsOfUser(Long userId, String state) {

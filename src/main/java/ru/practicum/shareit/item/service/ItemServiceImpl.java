@@ -20,6 +20,7 @@ import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
+import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
@@ -29,6 +30,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ItemServiceImpl implements ItemService {
+
+    private final Clock clock;
     private final ItemMapper itemMapper;
     private final CommentMapper commentMapper;
     private final ItemRepository itemRepository;
@@ -79,18 +82,18 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemResponseDto> getItemsForOwner(long userId) {
         return itemRepository.itemsWithNextAndPrevBookings(userId,
-                LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), null);
+                LocalDateTime.now(clock).truncatedTo(ChronoUnit.SECONDS), null);
     }
 
     @Override
     public ItemResponseDto getItemForOwner(long userId, long itemId) {
         List<ItemResponseDto> items =
                 itemRepository.itemsWithNextAndPrevBookings(userId,
-                        LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS), itemId);
+                        LocalDateTime.now(clock).truncatedTo(ChronoUnit.SECONDS), itemId);
 
         if (items.isEmpty()) {
             throw new ShareItNotFoundException(
-                        String.format("Item with id: %d not found", itemId));
+                    String.format("Item with id: %d not found", itemId));
         }
 
         return items.get(0);
@@ -116,18 +119,18 @@ public class ItemServiceImpl implements ItemService {
     public Comment addComment(long userId, long itemId, CommentRequestDto dto) {
         User user = userService.getUserBy(userId);
         Item item = itemMapper.toItem(getItemById(itemId, userId));
-        List<Booking> bookings =  bookingRepository.findAllByBookerIdAndItemId(userId, itemId);
+        List<Booking> bookings = bookingRepository.findAllByBookerIdAndItemId(userId, itemId);
 
-       if (bookings.isEmpty()) {
-           throw new ShareItNotFoundException(
-                   String.format("User with Id: %d don't booking Item with Id: %d", userId, itemId));
-       }
+        if (bookings.isEmpty()) {
+            throw new ShareItNotFoundException(
+                    String.format("User with Id: %d don't booking Item with Id: %d", userId, itemId));
+        }
 
-       if (bookings.get(0).getEnd().isAfter(LocalDateTime.now())) {
-           throw new ShareItBadRequest("Booking time not ended");
-       }
+        if (bookings.get(0).getEnd().isAfter(LocalDateTime.now(clock))) {
+            throw new ShareItBadRequest("Booking time not ended");
+        }
 
-       return commentRepository.save(
-               commentMapper.toComment(dto, user, item, LocalDateTime.now().plusSeconds(1)));
+        return commentRepository.save(
+                commentMapper.toComment(dto, user, item, LocalDateTime.now(clock)));
     }
 }

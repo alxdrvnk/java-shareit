@@ -6,6 +6,7 @@ import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.booking.service.BookingState;
 import ru.practicum.shareit.booking.service.provider.impl.*;
 
+import java.time.Clock;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -16,33 +17,25 @@ public class BookingProviderSelector implements BookingProvider {
 
     private final Map<BookingState, BookingProvider> providers;
 
-    public BookingProviderSelector(BookingRepository bookingRepository) {
+    public BookingProviderSelector(BookingRepository bookingRepository, Clock clock) {
         providers = new EnumMap<>(BookingState.class);
         providers.put(BookingState.ALL, new BookingProviderAllState(bookingRepository));
-        providers.put(BookingState.PAST, new BookingProviderPastState(bookingRepository));
-        providers.put(BookingState.FUTURE, new BookingProviderFutureState(bookingRepository));
-        providers.put(BookingState.CURRENT, new BookingProviderCurrentState(bookingRepository));
+        providers.put(BookingState.PAST, new BookingProviderPastState(clock, bookingRepository));
+        providers.put(BookingState.FUTURE, new BookingProviderFutureState(clock, bookingRepository));
+        providers.put(BookingState.CURRENT, new BookingProviderCurrentState(clock, bookingRepository));
         providers.put(BookingState.WAITING, new BookingProviderWaitingState(bookingRepository));
         providers.put(BookingState.REJECTED, new BookingProviderRejectedState(bookingRepository));
     }
 
     @Override
     public Collection<Booking> getBookingsOfUser(Long userId, String state) {
-        try {
-            BookingProvider provider = providers.get(BookingState.valueOf(state));
-            return provider.getBookingsOfUser(userId, state);
-        } catch (NullPointerException e) {
-            return Collections.emptyList();
-        }
+        BookingProvider provider = providers.get(BookingState.valueOf(state));
+        return provider.getBookingsOfUser(userId, state);
     }
 
     @Override
     public Collection<Booking> getBookingsOfOwnerItems(Long userId, String state) {
-        try {
-            BookingProvider provider = providers.get(BookingState.valueOf(state));
-            return provider.getBookingsOfOwnerItems(userId, state);
-        } catch (NullPointerException e) {
-            return Collections.emptyList();
-        }
+        BookingProvider provider = providers.get(BookingState.valueOf(state));
+        return provider.getBookingsOfOwnerItems(userId, state);
     }
 }
