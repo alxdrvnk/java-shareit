@@ -58,6 +58,9 @@ class BookingServiceImpl implements BookingService {
         if (booking.getStatus().equals(BookingStatus.APPROVED) && approved) {
             throw new ShareItBadRequest(
                     String.format("Booking with Id: %d already approved", id));
+        } else if (booking.getStatus().equals(BookingStatus.REJECTED) && !approved) {
+            throw new ShareItBadRequest(
+                    String.format("Booking with Id: %d already rejected", id));
         }
 
         if (approved) {
