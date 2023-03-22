@@ -1,30 +1,44 @@
 package ru.practicum.shareit.user.service
 
+
+import com.github.springtestdbunit.annotation.DatabaseSetup
+import org.springframework.dao.DataIntegrityViolationException
 import ru.practicum.shareit.exceptions.ShareItAlreadyExistsException
 import ru.practicum.shareit.exceptions.ShareItNotFoundException
-import ru.practicum.shareit.user.User
-import ru.practicum.shareit.user.dao.UserDao
+import ru.practicum.shareit.user.dto.UserDto
+import ru.practicum.shareit.user.mapper.UserMapper
+import ru.practicum.shareit.user.mapper.UserMapperImpl
+import ru.practicum.shareit.user.model.User
+import ru.practicum.shareit.user.repository.UserRepository
 import spock.lang.Specification
 
 class UserServiceImplSpec extends Specification {
 
+    private final UserMapper mapper = new UserMapperImpl()
+
+    @DatabaseSetup(value = "classpath:database/set_user.xml", connection = "dbUnitDatabaseConnection")
     def "Should throw ShareItAlreadyExistsException if updated email already exists"() {
         given:
-        def user = User.builder()
-                .name("testUser")
-                .email("testUser@email.email")
+        def userDto = UserDto.builder()
+                .name("Name")
+                .email("mail@mail.mail")
                 .build()
 
-        def dao = Stub(UserDao) {
-            update(user) >> 0
+        def user = User.builder()
+                .id(2L)
+                .name("Name")
+                .email("new@mail.mail")
+                .build()
 
-            getBy(1L) >> Optional.of(User.builder().build())
+        def repository = Stub(UserRepository) {
+            save(_ as User) >> { throw new DataIntegrityViolationException("") }
+            findById(_ as Long) >> Optional.of(user)
         }
 
-        def service = new UserServiceImpl(dao)
+        def service = new UserServiceImpl(repository, mapper)
 
         when:
-        service.update(user, 1L)
+        service.update(userDto,2L)
 
         then:
         thrown(ShareItAlreadyExistsException)
@@ -32,11 +46,11 @@ class UserServiceImplSpec extends Specification {
 
     def "Should throw ShareItNotFoundException if get non-existing user" () {
         given:
-        def dao = Stub(UserDao) {
-            getBy(_ as Long) >> Optional.empty()
+        def dao = Stub(UserRepository) {
+            findById(_ as Long) >> Optional.empty()
         }
 
-        def service = new UserServiceImpl(dao)
+        def service = new UserServiceImpl(dao, mapper)
 
         when:
         service.getUserBy(9999)
@@ -47,12 +61,11 @@ class UserServiceImplSpec extends Specification {
 
     def "Should throw ShareItNotFoundException if delete non-existing user" () {
         given:
-
-        def dao = Stub(UserDao) {
-            deleteBy(_ as Long) >> 0
+        def dao = Stub(UserRepository) {
+            deleteById(_ as Long) >> {throw new IllegalArgumentException("") }
         }
 
-        def service = new UserServiceImpl(dao)
+        def service = new UserServiceImpl(dao, mapper)
 
         when:
         service.deleteUserBy(9999)

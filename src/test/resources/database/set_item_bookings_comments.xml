@@ -1,0 +1,82 @@
+<dataset>
+
+    <!--    Users    -->
+    <public.users
+            id="1"
+            name="itemOwner"
+            email="itemOwner@mail.mail"
+    />
+    <public.users
+            id="2"
+            name="commentAuthor"
+            email="commentAuthor@mail.mail"
+    />
+    <public.users
+            id="3"
+            name="booker"
+            email="booker@mail.mail"
+    />
+    <!--    Items    -->
+    <public.items
+            id="1"
+            name="item_1_user_1"
+            description="item_1_user_1"
+            is_available="true"
+            owner_id="1"
+    />
+    <public.items
+            id="2"
+            name="item_2_user_2"
+            description="item_2_user_2"
+            is_available="false"
+            owner_id="2"
+    />
+    <public.items
+            id="3"
+            name="item_2_user_1"
+            description="item_2_user_1"
+            is_available="false"
+            owner_id="1"
+    />
+    <public.items
+            id="4"
+            name="item_3_user_1"
+            description="item_3_user_1"
+            is_available="false"
+            owner_id="1"
+    />
+    <!--    Comments    -->
+    <PUBLIC.COMMENTS
+            id="1"
+            text="Comment to Item 1 from AuthorName"
+            item_id="1"
+            author_id="2"
+            created_date="2023-03-01 12:00:00.000"
+    />
+    <!--     Bookings    -->
+    <PUBLIC.BOOKINGS
+            id="1"
+            start_date="2023-02-08 12:00:00.000"
+            end_date="2023-02-11 12:00:00.000"
+            status="APPROVED"
+            item_id="1"
+            booker_id="3"
+    />
+    <PUBLIC.BOOKINGS
+            id="2"
+            start_date="2023-03-04 12:00:00.000"
+            end_date="2023-03-06 12:00:00.000"
+            status="APPROVED"
+            item_id="1"
+            booker_id="3"
+
+    />
+    <PUBLIC.BOOKINGS
+            id="3"
+            start_date="2023-03-08 12:00:00.000"
+            end_date="2023-03-10 12:00:00.000"
+            status="APPROVED"
+            item_id="1"
+            booker_id="3"
+    />
+</dataset>

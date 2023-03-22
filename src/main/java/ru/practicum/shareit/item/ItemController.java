@@ -3,55 +3,71 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.item.dto.CommentRequestDto;
+import ru.practicum.shareit.item.dto.CommentResponseDto;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemResponseDto;
+import ru.practicum.shareit.item.mapper.CommentMapper;
 import ru.practicum.shareit.item.mapper.ItemMapper;
 import ru.practicum.shareit.item.service.ItemService;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.stream.Collectors;
 
-@Slf4j
+@Slf4j(topic = "ItemController: ")
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
 public class ItemController {
 
     private final ItemService itemService;
+    private final ItemMapper itemMapper;
+    private final CommentMapper commentMapper;
 
     @PostMapping
-    public ItemDto create(@Valid @RequestBody ItemDto itemDto,
-                          @RequestHeader("X-Sharer-User-Id") long userId) {
-        log.info(String.format("ItemController: create Item request. Data: %s", itemDto));
-        return ItemMapper.toItemDto(
-                itemService.create(ItemMapper.toItem(itemDto), userId));
+    public ItemResponseDto create(@Valid @RequestBody ItemDto itemDto,
+                                  @RequestHeader("X-Sharer-User-Id") long userId) {
+        log.info(String.format("Create Item request. Data: %s", itemDto));
+        return itemMapper.toItemDto(
+                itemService.create(itemMapper.toItem(itemDto), userId));
     }
 
     @PatchMapping("/{id}")
-    public ItemDto update(@PathVariable("id") long id,
+    public ItemResponseDto update(@PathVariable("id") long id,
                           @RequestBody ItemDto itemDto,
                           @RequestHeader("X-Sharer-User-Id") long userId) {
-        log.info(String.format("ItemController: update Item with id: %d . Data: %s", id, itemDto));
-        return ItemMapper.toItemDto(
+        log.info(String.format("Update Item with id: %d . Data: %s", id, itemDto));
+        return itemMapper.toItemDto(
                 itemService.update(itemDto, id, userId));
     }
 
     @GetMapping("/{id}")
-    public ItemDto getItemById(@PathVariable("id") long id) {
-        return ItemMapper.toItemDto(itemService.getItemById(id));
+    public ItemResponseDto getItemById(@PathVariable("id") long id,
+                                       @RequestHeader("X-Sharer-User-Id") long userId) {
+        return itemService.getItemById(id, userId);
     }
 
     @GetMapping
-    public List<ItemDto> getItemsByUser(@RequestHeader("X-Sharer-User-Id") long userId) {
-        return itemService.getItemsByUser(userId).stream()
-                .map(ItemMapper::toItemDto)
-                .collect(Collectors.toList());
+    public List<ItemResponseDto> getItemsByUser(@RequestHeader("X-Sharer-User-Id") long userId) {
+        return itemService.getItemsForOwner(userId);
     }
 
     @GetMapping("/search")
-    public List<ItemDto> getAvailableItems(@RequestParam(name = "text") String text) {
-        return itemService.getAvailableItems(text).stream()
-                .map(ItemMapper::toItemDto)
-                .collect(Collectors.toList());
+    public List<ItemResponseDto> findByNameAndDescription(@RequestHeader("X-Sharer-User-Id") long userId,
+                                                  @RequestParam String text) {
+        log.info(String.format("Search Item request with text: \"%s\"", text));
+        return itemService.getByText(userId, text);
+    }
+
+    @PostMapping("/{id}/comment")
+    public CommentResponseDto addComment(@Valid @RequestBody CommentRequestDto commentDto,
+                                         @PathVariable("id") long itemId,
+                                         @RequestHeader("X-Sharer-User-Id") long userId) {
+        log.info(
+                String.format(
+                        "Add COMMENT request from User with Id: %d for Item with Id: %d",
+                        userId,
+                        itemId));
+        return commentMapper.toCommentResponseDto(itemService.addComment(userId, itemId, commentDto));
     }
 }

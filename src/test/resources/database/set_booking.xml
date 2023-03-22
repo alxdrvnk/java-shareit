@@ -1,0 +1,124 @@
+<dataset>
+    <public.users
+            id="1"
+            name="user1"
+            email="user1@mail.mail"
+    />
+    <public.users
+            id="2"
+            name="user2"
+            email="user2@mail.mail"
+    />
+
+    <public.users
+            id="4"
+            name="booker"
+            email="booker@mail.mail"
+    />
+
+    <public.items
+            id="1"
+            name="item_1_user_1"
+            description="item_1_user_1"
+            is_available="true"
+            owner_id="1"
+    />
+    <public.items
+            id="2"
+            name="item_2_user_2"
+            description="item_2_user_2"
+            is_available="false"
+            owner_id="2"
+    />
+    <public.items
+            id="3"
+            name="item_2_user_1"
+            description="item_2_user_1"
+            is_available="false"
+            owner_id="1"
+    />
+    <public.items
+            id="4"
+            name="item_3_user_1"
+            description="item_3_user_1"
+            is_available="false"
+            owner_id="1"
+    />
+
+    <PUBLIC.COMMENTS
+            id="1"
+            text="Comment to Item 1"
+            item_id="1"
+            author_id="2"
+            created_date="2023-03-1 12:00:00.000"
+    />
+
+    <PUBLIC.BOOKINGS
+            id="1"
+            start_date="2023-03-1 12:00:00.000"
+            end_date="2023-03-2 12:00:00.000"
+            status="APPROVED"
+            item_id="3"
+            booker_id="4"
+    />
+
+    <PUBLIC.BOOKINGS
+
+            id="2"
+            start_date="2023-03-4 12:00:00.000"
+            end_date="2023-03-6 12:00:00.000"
+            status="APPROVED"
+            item_id="1"
+            booker_id="4"
+
+    />
+    <PUBLIC.BOOKINGS
+            id="3"
+            start_date="2023-03-8 12:00:00.000"
+            end_date="2023-03-10 12:00:00.000"
+            status="APPROVED"
+            item_id="2"
+            booker_id="4"
+    />
+
+    <PUBLIC.BOOKINGS
+            id="4"
+            start_date="2023-03-8 12:00:00.000"
+            end_date="2023-03-10 12:00:00.000"
+            status="APPROVED"
+            item_id="4"
+            booker_id="4"
+    />
+    <PUBLIC.BOOKINGS
+            id="5"
+            start_date="2023-04-8 12:00:00.000"
+            end_date="2023-05-10 12:00:00.000"
+            status="WAITING"
+            item_id="1"
+            booker_id="4"
+    />
+    <PUBLIC.BOOKINGS
+            id="6"
+            start_date="2023-03-8 12:00:00.000"
+            end_date="2023-03-10 12:00:00.000"
+            status="APPROVED"
+            item_id="4"
+            booker_id="4"
+    />
+    <PUBLIC.BOOKINGS
+            id="7"
+            start_date="2023-03-8 12:00:00.000"
+            end_date="2023-03-10 12:00:00.000"
+            status="REJECTED"
+            item_id="3"
+            booker_id="4"
+    />
+    <PUBLIC.BOOKINGS
+            id="8"
+            start_date="2023-03-8 12:00:00.000"
+            end_date="2023-03-10 12:00:00.000"
+            status="CANCELED"
+            item_id="1"
+            booker_id="4"
+    />
+</dataset>

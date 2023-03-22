@@ -1,13 +1,24 @@
 package ru.practicum.shareit.item
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.github.springtestdbunit.annotation.DatabaseSetup
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
+import org.springframework.test.web.servlet.MockMvcBuilder
+import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import ru.practicum.shareit.exceptions.ShareItExceptionHandler
+import ru.practicum.shareit.exceptions.ShareItNotFoundException
 import ru.practicum.shareit.item.dto.ItemDto
-import ru.practicum.shareit.user.User
+import ru.practicum.shareit.item.mapper.CommentMapper
+import ru.practicum.shareit.item.mapper.CommentMapperImpl
+import ru.practicum.shareit.item.mapper.ItemMapper
+import ru.practicum.shareit.item.mapper.ItemMapperImpl
+import ru.practicum.shareit.item.model.Item
+import ru.practicum.shareit.item.service.ItemService
+import ru.practicum.shareit.user.model.User
 import ru.practicum.shareit.user.dto.UserDto
 import spock.lang.Specification
 
@@ -17,103 +28,110 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@AutoConfigureMockMvc
 @SpringBootTest
 class ItemControllerSpec extends Specification {
 
-    @Autowired
-    private MockMvc mvc
-
     private final ObjectMapper objectMapper = new ObjectMapper()
+    private final ItemMapper itemMapper = new ItemMapperImpl()
+    private final CommentMapper commentMapper = new CommentMapperImpl()
 
     def "Should return 200 when create item"() {
         given:
-        def userDto = UserDto.builder()
-                .name("testUser")
-                .email("testUser@email.email")
+        def service = Mock(ItemService)
+        def controller = new ItemController(service, itemMapper, commentMapper)
+        def server = MockMvcBuilders
+                .standaloneSetup(controller)
+                .setControllerAdvice(ShareItExceptionHandler)
                 .build()
 
+        and:
         def itemDto = ItemDto.builder()
                 .name("item1")
                 .description("item1 description")
                 .available(true)
-                .owner(User.builder().name("testUser").email("testUser@email.email").build())
-                .request(null)
                 .build()
 
-        expect:
-        mvc.perform(post("/users")
+        when:
+        def request = post("/items")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(userDto)))
+                .content(objectMapper.writeValueAsString((itemDto)))
+                .header("X-Sharer-User-Id", 1)
+
+        and:
+        server.perform(request)
                 .andExpect(status().isOk())
 
-        mvc.perform(post("/items")
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("X-Sharer-User-Id", 1)
-                .content(objectMapper.writeValueAsString(itemDto)))
-                .andExpect(status().isOk())
+        then:
+        1 * service.create(_ as Item, 1L)
     }
 
 
     def "Should return 404 when add item with non-existent user"() {
         given:
+        def service = Mock(ItemService)
+        def controller = new ItemController(service, itemMapper, commentMapper)
+        def server = MockMvcBuilders
+                .standaloneSetup(controller)
+                .setControllerAdvice(ShareItExceptionHandler)
+                .build()
+
+        and:
         def itemDto = ItemDto.builder()
                 .name("item2")
                 .description("item2 description")
                 .available(true)
-                .owner(null)
-                .request(null)
                 .build()
 
-        expect:
-        mvc.perform(post("/items")
+        when:
+        def request = post("/items")
                 .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString((itemDto)))
                 .header("X-Sharer-User-Id", 9999)
-                .content(objectMapper.writeValueAsString(itemDto)))
+
+        and:
+        server.perform(request)
                 .andExpect(status().isNotFound())
+
+        then:
+        1 * service.create(_ as Item, 9999L) >> { throw new ShareItNotFoundException("") }
     }
 
     def "Should return 200 when update item"() {
         given:
+        def service = Mock(ItemService)
+        service.getItemByUser(1L, 1L) >> {
+            return Item.builder()
+                    .id(1L)
+                    .name("Item1")
+                    .description("Item1")
+                    .owner(User.builder().build())
+                    .build()
+        }
+        def controller = new ItemController(service, itemMapper, commentMapper)
+        def server = MockMvcBuilders
+                .standaloneSetup(controller)
+                .setControllerAdvice(ShareItExceptionHandler)
+                .build()
+
+        and:
         def updateItemDto = ItemDto.builder()
-                .id(1)
                 .name("UpdateItemName")
                 .description("UpdateItemName description")
                 .available(false)
                 .build()
 
-        expect:
-        mvc.perform(patch("/items/1")
+        when:
+        def request = patch("/items/1")
                 .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateItemDto))
                 .header("X-Sharer-User-Id", 1)
-                .content(objectMapper.writeValueAsString(updateItemDto)))
+        and:
+        server.perform(request)
                 .andExpect(status().isOk())
 
-    }
-
-    def "Should return 404 when item update from other user"() {
-        given:
-        def updateItemDto = ItemDto.builder()
-                .id(1)
-                .name("UpdateItemName")
-                .description("UpdateItemName description")
-                .available(false)
-                .build()
-
-        expect:
-        mvc.perform(patch("/items/1")
-                .contentType(MediaType.APPLICATION_JSON)
-                .header("X-Sharer-User-Id", 2)
-                .content(objectMapper.writeValueAsString(updateItemDto)))
-                .andExpect(status().isNotFound())
-
-    }
-
-    def "Should return 200 and empty list when empty search"() {
-        expect:
-        mvc.perform(get("/items/search?text=")
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().string(Collections.emptyList() as String))
+        then:
+        interaction {
+            1 * service.update(updateItemDto, 1, 1)
+        }
     }
 }

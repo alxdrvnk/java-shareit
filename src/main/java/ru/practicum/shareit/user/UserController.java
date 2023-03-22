@@ -10,40 +10,41 @@ import ru.practicum.shareit.user.service.UserService;
 import javax.validation.Valid;
 import java.util.List;
 
-@Slf4j
+@Slf4j(topic = "UserController")
 @RestController
 @RequestMapping(path = "/users")
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
+    private final UserMapper mapper;
 
     @PostMapping
     public UserDto create(@Valid @RequestBody UserDto user) {
-        log.info(String.format("UserController: create User request. Data: %s", user));
-        return UserMapper.toUserDto(userService.create(UserMapper.toUser(user)));
+        log.info(String.format("Create User request. Data: %s", user));
+        return mapper.toUserDto(userService.create(mapper.toUser(user)));
     }
 
     @PatchMapping("/{id}")
     public UserDto update(@PathVariable("id") Long id, @RequestBody UserDto user) {
-        log.info(String.format("UserController: update User with id: %d . Data: %s", id, user));
-        return UserMapper.toUserDto(userService.update(UserMapper.toUser(user), id));
+        log.info(String.format("Update User with id: %d . Data: %s", id, user));
+        return mapper.toUserDto(userService.update(user, id));
     }
 
     @GetMapping
     public List<UserDto> getAll() {
-        return UserMapper.toDtoList(userService.getAllUsers());
+        return mapper.toUserDtoList(userService.getAllUsers());
     }
 
     @GetMapping("/{id}")
     public UserDto getUserBy(@PathVariable("id") Long id) {
-        return UserMapper.toUserDto(userService.getUserBy(id));
+        return mapper.toUserDto(userService.getUserBy(id));
     }
 
     @DeleteMapping("/{id}")
     public void deleteUserBy(@PathVariable("id") Long id) {
         userService.deleteUserBy(id);
-        log.info(String.format("UserController: Remove User with id: %d", id));
+        log.info(String.format("Remove User with id: %d", id));
     }
 }
 

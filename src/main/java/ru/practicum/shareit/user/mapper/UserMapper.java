@@ -1,57 +1,23 @@
 package ru.practicum.shareit.user.mapper;
 
-import ru.practicum.shareit.user.User;
+import org.mapstruct.BeanMapping;
+import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.dto.UserDto;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class UserMapper {
-    public static UserDto toUserDto(User user) {
+@Mapper(componentModel = "spring")
+public interface UserMapper {
 
-        if (user == null) {
-            return null;
-        }
+    @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+    User updateUserFromDto(UserDto userDto, @MappingTarget User.UserBuilder user);
 
-        return UserDto.builder()
-                .id(user.getId())
-                .name(user.getName())
-                .email(user.getEmail())
-                .build();
-    }
+    User toUser(UserDto userDto);
 
-    public static User toUser(UserDto userDto) {
+    UserDto toUserDto(User user);
 
-        if (userDto == null) {
-            return null;
-        }
-
-        return User.builder()
-                .name(userDto.getName())
-                .email(userDto.getEmail())
-                .build();
-    }
-
-    public static List<UserDto> toDtoList(List<User> allUsers) {
-        return allUsers.stream().map(UserMapper::toUserDto).collect(Collectors.toList());
-    }
-
-    public static User patchUser(User from, User to) {
-        var user = User.builder()
-                .id(to.getId())
-                .name(to.getName())
-                .email(to.getEmail());
-
-        if (from.getName() != null) {
-           user.name(from.getName());
-        }
-
-        if (from.getEmail() != null) {
-            user.email(from.getEmail());
-        }
-
-        return user.build();
-    }
+    List<UserDto> toUserDtoList(List<User> userList);
 }
-
-
