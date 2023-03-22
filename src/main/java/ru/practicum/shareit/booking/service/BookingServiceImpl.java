@@ -55,6 +55,11 @@ class BookingServiceImpl implements BookingService {
                     String.format("User with Id: %d is not owner Item with Id: %d", userId, booking.getItem().getId()));
         }
 
+        if (booking.getStatus().equals(BookingStatus.APPROVED) && approved) {
+            throw new ShareItBadRequest(
+                    String.format("Booking with Id: %d already approved", id));
+        }
+
         if (approved) {
             booking = booking.withStatus(BookingStatus.APPROVED);
         } else {
