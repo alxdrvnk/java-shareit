@@ -8,7 +8,6 @@ import ru.practicum.shareit.booking.service.provider.impl.*;
 
 import java.time.Clock;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 
