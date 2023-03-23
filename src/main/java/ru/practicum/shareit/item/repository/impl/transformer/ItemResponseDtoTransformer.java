@@ -5,6 +5,7 @@ import ru.practicum.shareit.booking.dto.BookingItemDto;
 import ru.practicum.shareit.item.dto.CommentResponseDto;
 import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.user.model.User;
+import ru.practicum.shareit.utils.DbResponsePars;
 
 import java.sql.Timestamp;
 import java.time.temporal.ChronoUnit;
@@ -18,44 +19,44 @@ public class ItemResponseDtoTransformer implements ResultTransformer {
     private final Map<Long, ItemResponseDto> dtoMap = new LinkedHashMap<>();
 
     @Override
-    public Object transformTuple(Object[] tuple, String[] aliases) {
-        Map<String, Integer> aliasToIndexMap = aliasToIndexMap(aliases);
-        Long itemResponseId = Long.valueOf((Integer) tuple[aliasToIndexMap.get("cur_item_id")]);
+    public Object transformTuple(Object[] objects, String[] strings) {
+        Map<String, Integer> aliasToIndexMap = DbResponsePars.aliasToIndexMap(strings);
+        Long itemResponseId = Long.valueOf((Integer) objects[aliasToIndexMap.get("cur_item_id")]);
 
         BookingItemDto lastBooking = getBookingDto(
                 "last_booking_id",
                 "last_booking_start",
                 "last_booking_end",
                 "last_booker_id",
-                tuple, aliasToIndexMap);
+                objects, aliasToIndexMap);
 
         BookingItemDto nextBooking = getBookingDto(
                 "next_booking_id",
                 "next_booking_start",
                 "next_booking_end",
                 "next_booker_id",
-                tuple, aliasToIndexMap);
+                objects, aliasToIndexMap);
 
         CommentResponseDto comment = getCommentDto(
                 "comment_id",
                 "comment_text",
                 "comment_author_name",
                 "comment_created",
-                tuple, aliasToIndexMap);
+                objects, aliasToIndexMap);
 
         User owner = getUser(
                 "item_owner_id",
                 "item_owner_name",
                 "item_owner_email",
-                tuple, aliasToIndexMap);
+                objects, aliasToIndexMap);
 
         ItemResponseDto itemResponseDto = dtoMap.computeIfAbsent(
                 itemResponseId,
                 id -> ItemResponseDto.builder()
                         .id(itemResponseId)
-                        .name((String) tuple[aliasToIndexMap.get("item_name")])
-                        .description((String) tuple[aliasToIndexMap.get("item_description")])
-                        .available((Boolean) tuple[aliasToIndexMap.get("item_available")])
+                        .name((String) objects[aliasToIndexMap.get("item_name")])
+                        .description((String) objects[aliasToIndexMap.get("item_description")])
+                        .available((Boolean) objects[aliasToIndexMap.get("item_available")])
                         .owner(owner)
                         .lastBooking(lastBooking)
                         .nextBooking(nextBooking)
@@ -75,31 +76,23 @@ public class ItemResponseDtoTransformer implements ResultTransformer {
         return new ArrayList<>(dtoMap.values());
     }
 
-    private Map<String, Integer> aliasToIndexMap(String[] aliases) {
-        Map<String, Integer> aliasToIndexMap = new LinkedHashMap<>();
-
-        for (int i = 0; i < aliases.length; i++) {
-            aliasToIndexMap.put(aliases[i].toLowerCase(), i);
-        }
-        return aliasToIndexMap;
-    }
 
     private BookingItemDto getBookingDto(String idAlias,
                                          String startAlias,
                                          String endAlias,
                                          String bookerAlias,
-                                         Object[] tuple,
+                                         Object[] objects,
                                          Map<String, Integer> aliasToIndexMap) {
 
-        if (tuple[aliasToIndexMap.get(idAlias)] == null) {
+        if (objects[aliasToIndexMap.get(idAlias)] == null) {
             return null;
         }
 
         return BookingItemDto.builder()
-                .id(Long.valueOf((Integer) tuple[aliasToIndexMap.get(idAlias)]))
-                .bookerId(Long.valueOf((Integer) tuple[aliasToIndexMap.get(bookerAlias)]))
-                .startDate(((Timestamp) tuple[aliasToIndexMap.get(startAlias)]).toLocalDateTime())
-                .endDate(((Timestamp) tuple[aliasToIndexMap.get(endAlias)]).toLocalDateTime())
+                .id(Long.valueOf((Integer) objects[aliasToIndexMap.get(idAlias)]))
+                .bookerId(Long.valueOf((Integer) objects[aliasToIndexMap.get(bookerAlias)]))
+                .startDate(((Timestamp) objects[aliasToIndexMap.get(startAlias)]).toLocalDateTime())
+                .endDate(((Timestamp) objects[aliasToIndexMap.get(endAlias)]).toLocalDateTime())
                 .build();
     }
 
@@ -107,18 +100,18 @@ public class ItemResponseDtoTransformer implements ResultTransformer {
                                              String textAlias,
                                              String authorAlias,
                                              String createDateAlias,
-                                             Object[] tuple,
+                                             Object[] objects,
                                              Map<String, Integer> aliasToIndexMap) {
 
-        if (tuple[aliasToIndexMap.get(idAlias)] == null) {
+        if (objects[aliasToIndexMap.get(idAlias)] == null) {
             return null;
         }
 
         return CommentResponseDto.builder()
-                .id(Long.valueOf((Integer) tuple[aliasToIndexMap.get(idAlias)]))
-                .authorName((String) tuple[aliasToIndexMap.get(authorAlias)])
-                .text((String) tuple[aliasToIndexMap.get(textAlias)])
-                .created(((Timestamp) tuple[aliasToIndexMap.get(createDateAlias)])
+                .id(Long.valueOf((Integer) objects[aliasToIndexMap.get(idAlias)]))
+                .authorName((String) objects[aliasToIndexMap.get(authorAlias)])
+                .text((String) objects[aliasToIndexMap.get(textAlias)])
+                .created(((Timestamp) objects[aliasToIndexMap.get(createDateAlias)])
                         .toLocalDateTime().truncatedTo(ChronoUnit.SECONDS))
                 .build();
     }
@@ -126,17 +119,17 @@ public class ItemResponseDtoTransformer implements ResultTransformer {
     private User getUser(String idAlias,
                          String nameAlias,
                          String emailAlias,
-                         Object[] tuple,
+                         Object[] objects,
                          Map<String, Integer> aliasToIndexMap) {
 
-        if (tuple[aliasToIndexMap.get(idAlias)] == null) {
+        if (objects[aliasToIndexMap.get(idAlias)] == null) {
             return null;
         }
 
         return User.builder()
-                .id(Long.valueOf((Integer) tuple[aliasToIndexMap.get(idAlias)]))
-                .name((String) tuple[aliasToIndexMap.get(nameAlias)])
-                .email((String) tuple[aliasToIndexMap.get(emailAlias)])
+                .id(Long.valueOf((Integer) objects[aliasToIndexMap.get(idAlias)]))
+                .name((String) objects[aliasToIndexMap.get(nameAlias)])
+                .email((String) objects[aliasToIndexMap.get(emailAlias)])
                 .build();
     }
 }
