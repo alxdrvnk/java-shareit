@@ -57,4 +57,33 @@ public class ItemRequestsWithItemsRepositoryImpl implements ItemRequestsWithItem
 
         return dtoList.stream().findFirst();
     }
+
+    @Override
+    public List<ItemRequestResponseDto> findByRequesterIdNot(long userId, int from, int size) {
+        List<ItemRequestResponseDto> dtoList = entityManager.createNativeQuery(
+                        "SELECT * " +
+                           "FROM (" +
+                                "SELECT " +
+                                    "r.id AS request_id, " +
+                                    "r.description AS request_description, " +
+                                    "r.create_date AS request_create_date, " +
+                                    "i.id AS item_id, " +
+                                    "i.name AS item_name, " +
+                                    "i.owner_id AS item_owner_id," +
+                                    "dense_rank() OVER (ORDER BY r.create_date DESC) AS rank " +
+                                "FROM requests AS r " +
+                                "LEFT JOIN items AS i " +
+                                    "ON i.request_id = r.id " +
+                                "WHERE r.requester_id <> :userId) AS d " +
+                           "WHERE d.rank >= :start AND d.rank < :end " +
+                           "ORDER BY d.rank")
+                .setParameter("userId", userId)
+                .setParameter("start", from)
+                .setParameter("end", from + size)
+                .unwrap(Query.class)
+                .setResultTransformer(new ItemRequestDtoTransformer())
+                .getResultList();
+
+        return dtoList;
+    }
 }

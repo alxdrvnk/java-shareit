@@ -4,6 +4,7 @@ import ru.practicum.shareit.booking.dto.BookingItemDto
 import ru.practicum.shareit.booking.dto.BookingRequestDto
 import ru.practicum.shareit.booking.model.Booking
 import ru.practicum.shareit.booking.model.BookingStatus
+import ru.practicum.shareit.item.dto.ItemForBookingDto
 import ru.practicum.shareit.item.model.Item
 import ru.practicum.shareit.user.model.User
 import spock.lang.Specification
@@ -49,7 +50,7 @@ class BookingMapperSpec extends Specification {
         dto.id == 1
         dto.start == LocalDateTime.of(2007, 9, 1, 12, 0, 0)
         dto.end == LocalDateTime.of(2007, 10, 1, 12, 0, 0)
-        dto.item == item
+        dto.item == ItemForBookingDto.builder().id(1).name("Item").build()
         dto.booker == booker
         dto.status == BookingStatus.APPROVED
     }

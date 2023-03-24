@@ -10,4 +10,6 @@ public interface ItemRequestsWithItemsRepository {
     List<ItemRequestResponseDto> getByRequesterId(Long userId);
 
     Optional<ItemRequestResponseDto> getItemRequestById(Long requestId);
+
+    List<ItemRequestResponseDto> findByRequesterIdNot(long userId, int from, int size);
 }

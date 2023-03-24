@@ -80,4 +80,24 @@ class ItemRequestRepositorySpec extends Specification {
         then:
         itemRequest.isEmpty()
     }
+
+    @DatabaseSetup(value = "classpath:database/set_item_requests_for_pagination.xml", connection = "dbUnitDatabaseConnection")
+    def "Should return all ItemRequests do not belong to the user in descending order" () {
+        when:
+        def itemRequests = repository.findByRequesterIdNot(2L, 0, 10)
+
+        then:
+        itemRequests.size() == 4
+        itemRequests.id == [4, 3, 2, 1]
+    }
+
+    @DatabaseSetup(value = "classpath:database/set_item_requests_for_pagination.xml", connection = "dbUnitDatabaseConnection")
+    def "Should return 2 ItemRequests when pagination parameters page=1 and size=2" () {
+        when:
+        def itemRequests = repository.findByRequesterIdNot(2L, 3, 2)
+
+        then:
+        itemRequests.size() == 2
+        itemRequests.id == [2,1]
+    }
 }

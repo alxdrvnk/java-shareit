@@ -6,11 +6,11 @@ import ru.practicum.shareit.request.model.ItemRequest;
 import java.util.Collection;
 
 public interface ItemRequestService {
-    ItemRequestResponseDto create(long userId, ItemRequest request);
+    ItemRequestResponseDto create(ItemRequest request, long userId);
 
     Collection<ItemRequestResponseDto> getByUser(long userId);
 
     ItemRequestResponseDto getById(long requestId);
 
-    Collection<ItemRequestResponseDto> getAll(long userId, long from, int size);
+    Collection<ItemRequestResponseDto> getAll(long userId, int from, int size);
 }

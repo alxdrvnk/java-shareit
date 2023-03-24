@@ -32,6 +32,31 @@
             owner_id="3"
             request_id="1"
     />
+
+    <public.items
+            id="3"
+            name="Request item 2"
+            description="Request item 2 description"
+            is_available="true"
+            owner_id="3"
+            request_id="2"
+    />
+    <public.items
+            id="4"
+            name="Request item 2"
+            description="Request item 2 description"
+            is_available="true"
+            owner_id="3"
+            request_id="3"
+    />
+    <public.items
+            id="5"
+            name="Request item 2"
+            description="Request item 2 description"
+            is_available="true"
+            owner_id="3"
+            request_id="4"
+    />
     <!--  Requests  -->
     <public.requests
             id="1"
@@ -57,5 +82,4 @@
             requester_id="1"
             create_date="2007-09-04 12:00:00.000"
     />
-
 </dataset>
