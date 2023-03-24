@@ -43,7 +43,7 @@ public class ItemRequestDtoTransformer implements ResultTransformer {
         if (item != null) {
             List<ItemForItemRequestDto> items = itemRequestResponseDto.getItems();
             items.add(item);
-            itemRequestResponseDto.withItems(items);
+            itemRequestResponseDto = itemRequestResponseDto.withItems(items);
         }
         return itemRequestResponseDto;
     }
