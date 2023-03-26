@@ -99,7 +99,7 @@ public class ItemWithBookingsRepositoryImpl implements ItemWithBookingsRepositor
                 .setParameter("date", date)
                 .setParameter("owner_id", userId)
                 .setParameter("start", from)
-                .setParameter("end", from + size)
+                .setParameter("end", from + size + 1)
                 .unwrap(Query.class)
                 .setResultTransformer(new ItemResponseDtoTransformer())
                 .getResultList();

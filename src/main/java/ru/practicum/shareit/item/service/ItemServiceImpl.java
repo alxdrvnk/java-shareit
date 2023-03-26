@@ -107,7 +107,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemResponseDto getItemForOwner(long userId, long itemId) {
         List<ItemResponseDto> items =
                 itemRepository.itemsWithNextAndPrevBookings(userId,
-                        LocalDateTime.now(clock).truncatedTo(ChronoUnit.SECONDS), itemId, 0, 2);
+                        LocalDateTime.now(clock).truncatedTo(ChronoUnit.SECONDS), itemId, 0, 1);
 
         if (items.isEmpty()) {
             throw new ShareItNotFoundException(
