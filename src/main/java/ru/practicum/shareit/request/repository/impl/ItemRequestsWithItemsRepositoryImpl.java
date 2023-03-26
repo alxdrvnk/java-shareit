@@ -24,9 +24,12 @@ public class ItemRequestsWithItemsRepositoryImpl implements ItemRequestsWithItem
                         "r.create_date AS request_create_date, " +
                         "i.id AS item_id, " +
                         "i.name AS item_name, " +
-                        "i.owner_id AS item_owner_id " +
+                        "i.owner_id AS item_owner_id, " +
+                        "i.is_available AS item_available," +
+                        "i.description AS item_description," +
+                        "i.request_id AS item_request_id " +
                     "FROM requests AS r " +
-                    "INNER JOIN items AS i " +
+                    "LEFT JOIN items AS i " +
                         "ON i.request_id = r.id " +
                     "WHERE r.requester_id = :userId " +
                     "ORDER BY r.id DESC")
@@ -39,15 +42,18 @@ public class ItemRequestsWithItemsRepositoryImpl implements ItemRequestsWithItem
     @Override
     public Optional<ItemRequestResponseDto> getItemRequestById(Long requestId) {
         List<ItemRequestResponseDto> dtoList = entityManager.createNativeQuery(
-                "SELECT " +
+            "SELECT " +
                         "r.id AS request_id, " +
                         "r.description AS request_description, " +
                         "r.create_date AS request_create_date, " +
                         "i.id AS item_id, " +
                         "i.name AS item_name, " +
-                        "i.owner_id AS item_owner_id " +
+                        "i.owner_id AS item_owner_id, " +
+                        "i.is_available AS item_available," +
+                        "i.description AS item_description," +
+                        "i.request_id AS item_request_id " +
                     "FROM requests AS r " +
-                    "INNER JOIN items AS i " +
+                    "LEFT JOIN items AS i " +
                         "ON i.request_id = r.id " +
                     "WHERE r.id =  :requestId")
                 .setParameter("requestId", requestId)
@@ -60,7 +66,8 @@ public class ItemRequestsWithItemsRepositoryImpl implements ItemRequestsWithItem
 
     @Override
     public List<ItemRequestResponseDto> findByRequesterIdNot(long userId, int from, int size) {
-        List<ItemRequestResponseDto> dtoList = entityManager.createNativeQuery(
+
+        return (List<ItemRequestResponseDto>) entityManager.createNativeQuery(
                         "SELECT * " +
                            "FROM (" +
                                 "SELECT " +
@@ -70,6 +77,9 @@ public class ItemRequestsWithItemsRepositoryImpl implements ItemRequestsWithItem
                                     "i.id AS item_id, " +
                                     "i.name AS item_name, " +
                                     "i.owner_id AS item_owner_id," +
+                                    "i.is_available AS item_available," +
+                                    "i.description AS item_description," +
+                                    "i.request_id AS item_request_id, " +
                                     "dense_rank() OVER (ORDER BY r.create_date DESC) AS rank " +
                                 "FROM requests AS r " +
                                 "LEFT JOIN items AS i " +
@@ -83,7 +93,5 @@ public class ItemRequestsWithItemsRepositoryImpl implements ItemRequestsWithItem
                 .unwrap(Query.class)
                 .setResultTransformer(new ItemRequestDtoTransformer())
                 .getResultList();
-
-        return dtoList;
     }
 }

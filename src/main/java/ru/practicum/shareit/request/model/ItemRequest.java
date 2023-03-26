@@ -18,6 +18,7 @@ public class ItemRequest {
     Long id;
     @Column(name = "description", nullable = false)
     String description;
+    @With
     @ManyToOne
     @JoinColumn(name = "requester_id", nullable = false)
     User requester;

@@ -33,6 +33,7 @@ public class Item {
     @JoinColumn(name = "owner_id", nullable = false)
     User owner;
 
+    @With
     @ManyToOne
     @JoinColumn(name = "request_id")
     ItemRequest request;

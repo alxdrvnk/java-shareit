@@ -9,6 +9,7 @@ import ru.practicum.shareit.request.dto.ItemRequestResponseDto;
 import ru.practicum.shareit.request.mapper.ItemRequestMapper;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
 import java.time.Clock;
@@ -27,9 +28,11 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public ItemRequestResponseDto create(ItemRequest request, long userId) {
-        userService.getUserBy(userId); // Требуется возвращать 404 если пользователь не найден
+        User user = userService.getUserBy(userId);
         return itemRequestMapper.toItemRequestResponseDto(
-                itemRequestRepository.save(request.withCreated(LocalDateTime.now(clock))));
+                itemRequestRepository.save(request
+                        .withRequester(user)
+                        .withCreated(LocalDateTime.now(clock))));
     }
 
     @Override
@@ -39,11 +42,22 @@ public class ItemRequestServiceImpl implements ItemRequestService {
     }
 
     @Override
-    public ItemRequestResponseDto getById(long requestId) {
+    public ItemRequestResponseDto getByIdWithItems(long requestId, long userId) {
+        userService.getUserBy(userId);
         return itemRequestRepository.getItemRequestById(requestId).orElseThrow(
                 () -> new ShareItNotFoundException(
                         String.format("ItemRequest with id: %d not found", requestId)));
     }
+
+    @Override
+    public ItemRequest getById(long requestId, long userId) {
+        userService.getUserBy(userId);
+        return itemRequestRepository.findById(requestId).orElseThrow(
+                () -> new ShareItNotFoundException(
+                        String.format("ItemRequest with id: %d not found", requestId)));
+
+    }
+
 
     @Override
     public Collection<ItemRequestResponseDto> getAll(long userId, int from, int size) {

@@ -100,7 +100,7 @@ class ItemRequestServiceImplSpec extends Specification {
         def service = new ItemRequestServiceImpl(clock, mapper, repository, userService)
 
         when:
-        service.getById(1L)
+        service.getByIdWithItems(1L, 1L)
 
         then:
         thrown(ShareItNotFoundException)

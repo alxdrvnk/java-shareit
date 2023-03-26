@@ -10,5 +10,8 @@ import lombok.extern.jackson.Jacksonized;
 public class ItemForItemRequestDto {
     Long id;
     String name;
+    String description;
+    Boolean available;
+    Long requestId;
     Long ownerId;
 }

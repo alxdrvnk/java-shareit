@@ -80,8 +80,9 @@ class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Collection<Booking> getAllByState(long userId, BookingState bookingState) {
-        Collection<Booking> bookings = bookingProviderSelector.getBookingsOfUser(userId, bookingState.name());
+    public Collection<Booking> getAllByState(long userId, BookingState bookingState, int from, int size) {
+        Collection<Booking> bookings =
+                bookingProviderSelector.getBookingsOfUser(userId, bookingState.name(), from, size);
         if (bookings.isEmpty()) {
             throw new ShareItNotFoundException(
                     String.format("User with Id: %d not found or doesn't have bookings", userId));
@@ -90,8 +91,9 @@ class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public Collection<Booking> getAllByOwnerWithState(long userId, BookingState bookingState) {
-        Collection<Booking> bookings = bookingProviderSelector.getBookingsOfOwnerItems(userId, bookingState.name());
+    public Collection<Booking> getAllByOwnerWithState(long userId, BookingState bookingState, int from, int size) {
+        Collection<Booking> bookings =
+                bookingProviderSelector.getBookingsOfOwnerItems(userId, bookingState.name(), from, size);
         if (bookings.isEmpty()) {
             throw new ShareItNotFoundException(
                     String.format("User with Id: %d not found or is not owner", userId));

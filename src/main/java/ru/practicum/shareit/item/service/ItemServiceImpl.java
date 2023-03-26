@@ -2,6 +2,8 @@ package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.model.Booking;
@@ -17,6 +19,8 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.service.ItemRequestService;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.service.UserService;
 
@@ -38,18 +42,32 @@ public class ItemServiceImpl implements ItemService {
     private final UserService userService;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final ItemRequestService itemRequestService;
 
     @Override
-    public Item create(Item item, long userId) {
+    public Item create(ItemDto itemDto, long userId) {
         User user = userService.getUserBy(userId);
-        return itemRepository.save(item.withOwner(user));
+        ItemRequest request = null;
+
+        if (itemDto.getRequestId() != null) {
+            request = itemRequestService.getById(itemDto.getRequestId(), userId);
+        }
+        return itemRepository.save(
+                itemMapper.toItem(itemDto)
+                        .withRequest(request)
+                        .withOwner(user));
     }
 
     @Transactional
     @Override
     public Item update(ItemDto itemDto, long itemId, long userId) {
         Item actualItem = getItemByUser(userId, itemId);
-        Item item = itemMapper.updateItemFromDto(itemDto, actualItem.toBuilder());
+        ItemRequest request = null;
+
+        if (itemDto.getRequestId() != null) {
+            request = itemRequestService.getById(itemDto.getRequestId(), userId);
+        }
+        Item item = itemMapper.updateItemFromDto(itemDto, actualItem.toBuilder(), request);
         return itemRepository.save(item);
     }
 
@@ -80,16 +98,16 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemResponseDto> getItemsForOwner(long userId) {
+    public List<ItemResponseDto> getItemsForOwner(long userId, int from, int size) {
         return itemRepository.itemsWithNextAndPrevBookings(userId,
-                LocalDateTime.now(clock).truncatedTo(ChronoUnit.SECONDS), null);
+                LocalDateTime.now(clock).truncatedTo(ChronoUnit.SECONDS), null, from, size);
     }
 
     @Override
     public ItemResponseDto getItemForOwner(long userId, long itemId) {
         List<ItemResponseDto> items =
                 itemRepository.itemsWithNextAndPrevBookings(userId,
-                        LocalDateTime.now(clock).truncatedTo(ChronoUnit.SECONDS), itemId);
+                        LocalDateTime.now(clock).truncatedTo(ChronoUnit.SECONDS), itemId, 0, 0);
 
         if (items.isEmpty()) {
             throw new ShareItNotFoundException(
@@ -106,12 +124,14 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemResponseDto> getByText(long userId, String text) {
+    public List<ItemResponseDto> getByText(long userId, String text, int from, int size) {
         userService.getUserBy(userId);
         if (text.isBlank()) {
             return Collections.emptyList();
         }
-        return itemMapper.toItemDtoList(itemRepository.searchByText(text));
+
+        Pageable pageable = PageRequest.of(from/size, size);
+        return itemMapper.toItemDtoList(itemRepository.searchByText(text, pageable));
     }
 
     @Override

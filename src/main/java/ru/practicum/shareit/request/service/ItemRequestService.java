@@ -10,7 +10,9 @@ public interface ItemRequestService {
 
     Collection<ItemRequestResponseDto> getByUser(long userId);
 
-    ItemRequestResponseDto getById(long requestId);
+    ItemRequestResponseDto getByIdWithItems(long requestId, long userId);
+
+    ItemRequest getById(long requestId, long userId);
 
     Collection<ItemRequestResponseDto> getAll(long userId, int from, int size);
 }

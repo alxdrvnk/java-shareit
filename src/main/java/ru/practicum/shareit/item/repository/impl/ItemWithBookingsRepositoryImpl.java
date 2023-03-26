@@ -16,7 +16,11 @@ public class ItemWithBookingsRepositoryImpl implements ItemWithBookingsRepositor
     private EntityManager entityManager;
 
     @Override
-    public List<ItemResponseDto> itemsWithNextAndPrevBookings(long userId, LocalDateTime date, Long itemId) {
+    public List<ItemResponseDto> itemsWithNextAndPrevBookings(long userId,
+                                                              LocalDateTime date,
+                                                              Long itemId,
+                                                              int from,
+                                                              int size) {
         String filter = "WHERE i.owner_id = :owner_id ";
 
         if (itemId != null) {
@@ -43,7 +47,8 @@ public class ItemWithBookingsRepositoryImpl implements ItemWithBookingsRepositor
                                 "c.created_date AS comment_created, " +
                                 "item_owner_id, " +
                                 "item_owner_name, " +
-                                "item_owner_email "  +
+                                "item_owner_email," +
+                                "rank "  +
                         "FROM " +
                             "(SELECT DISTINCT ON(cur_item_id) " +
                                     "i.id AS cur_item_id, " +
@@ -60,7 +65,9 @@ public class ItemWithBookingsRepositoryImpl implements ItemWithBookingsRepositor
                                     "next_booking.booker_id AS next_booker_id, " +
                                     "item_owner.id AS item_owner_id, " +
                                     "item_owner.name AS item_owner_name, " +
-                                    "item_owner.email As item_owner_email " +
+                                    "item_owner.email As item_owner_email," +
+                                    "DENSE_RANK () OVER (ORDER BY last_booking.END_DATE DESC, " +
+                                                        "next_booking.START_DATE ASC) AS rank " +
                         "FROM " +
                                 "items AS i " +
                         "LEFT JOIN " +
@@ -87,9 +94,12 @@ public class ItemWithBookingsRepositoryImpl implements ItemWithBookingsRepositor
                                 "ON c.item_id = cur_item_id " +
                         "LEFT JOIN " +
                             "users AS comments_author " +
-                                "ON comments_author.id = c.author_id ")
+                                "ON comments_author.id = c.author_id " +
+                        "WHERE rank > :start AND rank < end")
                 .setParameter("date", date)
                 .setParameter("owner_id", userId)
+                .setParameter("start", from)
+                .setParameter("end", from + size)
                 .unwrap(Query.class)
                 .setResultTransformer(new ItemResponseDtoTransformer())
                 .getResultList();

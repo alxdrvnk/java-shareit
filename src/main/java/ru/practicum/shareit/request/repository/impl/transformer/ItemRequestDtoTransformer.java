@@ -28,7 +28,10 @@ public class ItemRequestDtoTransformer implements ResultTransformer {
         ItemForItemRequestDto item = getItemForItemRequestDto(
                 "item_id",
                 "item_name",
-                "item_owner_id", objects, aliasToIndexMap);
+                "item_owner_id",
+                "item_description",
+                "item_available",
+                "item_request_id", objects, aliasToIndexMap);
 
         ItemRequestResponseDto itemRequestResponseDto = dtoMap.computeIfAbsent(
                 itemRequestId,
@@ -56,6 +59,9 @@ public class ItemRequestDtoTransformer implements ResultTransformer {
     private ItemForItemRequestDto getItemForItemRequestDto(String idAlias,
                                                            String nameAlias,
                                                            String ownerIdAlias,
+                                                           String descriptionAlias,
+                                                           String availableAlias,
+                                                           String requestIdAlieas,
                                                            Object[] objects,
                                                            Map<String, Integer> aliasToIndexMap) {
         if (objects[aliasToIndexMap.get(idAlias)] == null) {
@@ -65,6 +71,9 @@ public class ItemRequestDtoTransformer implements ResultTransformer {
         return ItemForItemRequestDto.builder()
                 .id(Long.valueOf((Integer) objects[aliasToIndexMap.get(idAlias)]))
                 .name((String) objects[aliasToIndexMap.get(nameAlias)])
+                .description((String) objects[aliasToIndexMap.get(descriptionAlias)])
+                .available((Boolean) objects[aliasToIndexMap.get(availableAlias)])
+                .requestId(Long.valueOf((Integer) objects[aliasToIndexMap.get(requestIdAlieas)]))
                 .ownerId(Long.valueOf((Integer) objects[aliasToIndexMap.get(ownerIdAlias)]))
                 .build();
     }
