@@ -95,7 +95,7 @@ public class ItemWithBookingsRepositoryImpl implements ItemWithBookingsRepositor
                         "LEFT JOIN " +
                             "users AS comments_author " +
                                 "ON comments_author.id = c.author_id " +
-                        "WHERE rank > :start AND rank < end")
+                        "WHERE rank > :start AND rank < :end")
                 .setParameter("date", date)
                 .setParameter("owner_id", userId)
                 .setParameter("start", from)
