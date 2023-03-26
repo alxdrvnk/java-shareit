@@ -2,9 +2,10 @@ package ru.practicum.shareit.booking.repository
 
 import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener
 import com.github.springtestdbunit.annotation.DatabaseSetup
-import org.apache.catalina.startup.ContextConfig
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.PageRequest
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.TestExecutionListeners
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener
@@ -27,7 +28,7 @@ class BookingRepositorySpec extends Specification {
             connection = "dbUnitDatabaseConnection")
     def "Should return Bookings find by owner id" () {
         when:
-        def bookingList = bookingRepository.findAllByOwnerId(1L)
+        def bookingList = bookingRepository.findAllByOwnerId(1L, PageRequest.of(0, 20))
 
         then:
         bookingList.size() > 0
@@ -44,7 +45,8 @@ class BookingRepositorySpec extends Specification {
         def bookingList = bookingRepository.
                 findAllByOwnerIdAndPastState(
                         1L,
-                        LocalDateTime.of(2023,3,7,12,0,0))
+                        LocalDateTime.of(2023, 3, 7, 12, 0, 0),
+                        PageRequest.of(0, 20))
 
         then:
         bookingList.size() > 0
@@ -61,7 +63,8 @@ class BookingRepositorySpec extends Specification {
         def bookingList = bookingRepository.
                 findAllByOwnerIdAndFutureState(
                         1L,
-                        LocalDateTime.of(2023,3,5,12,0,0))
+                        LocalDateTime.of(2023, 3, 5, 12, 0, 0),
+                        PageRequest.of(0, 20))
 
         then:
         bookingList.size() > 0
@@ -78,7 +81,8 @@ class BookingRepositorySpec extends Specification {
         def bookingList = bookingRepository.
                 findAllByOwnerIdAndCurrentState(
                         1L,
-                        LocalDateTime.of(2023,3,9,12,0,0))
+                        LocalDateTime.of(2023, 3, 9, 12, 0, 0),
+                        PageRequest.of(0, 20))
 
         then:
         bookingList.size() > 0
@@ -91,15 +95,17 @@ class BookingRepositorySpec extends Specification {
             value = "classpath:database/set_booking.xml",
             connection = "dbUnitDatabaseConnection")
     def "Should return Booking find by owner id and status" () {
+        given:
+        def pageable = PageRequest.of(0, 20)
         when:
         def bookingWaitingList = bookingRepository.
-                findAllByOwnerIdAndStatus(1L, BookingStatus.WAITING)
+                findAllByOwnerIdAndStatus(1L, BookingStatus.WAITING, pageable)
         def bookingApprovedList = bookingRepository.
-                findAllByOwnerIdAndStatus(1L, BookingStatus.APPROVED)
+                findAllByOwnerIdAndStatus(1L, BookingStatus.APPROVED, pageable)
         def bookingRejectedList = bookingRepository.
-                findAllByOwnerIdAndStatus(1L, BookingStatus.REJECTED)
+                findAllByOwnerIdAndStatus(1L, BookingStatus.REJECTED, pageable)
         def bookingCanceledList = bookingRepository.
-                findAllByOwnerIdAndStatus(1L, BookingStatus.CANCELED)
+                findAllByOwnerIdAndStatus(1L, BookingStatus.CANCELED, pageable)
         then:
         bookingWaitingList.size() > 0
         bookingApprovedList.size() > 0

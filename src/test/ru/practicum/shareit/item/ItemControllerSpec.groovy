@@ -22,8 +22,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ItemControllerSpec extends Specification {
 
     private final ObjectMapper objectMapper = new ObjectMapper()
-    private final ItemMapper itemMapper = new ItemMapper()
     private final CommentMapper commentMapper = new CommentMapper()
+    private final ItemMapper itemMapper = new ItemMapper(commentMapper)
 
     def "Should return 200 when create item"() {
         given:

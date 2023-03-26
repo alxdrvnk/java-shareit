@@ -4,6 +4,7 @@ import com.github.springtestdbunit.TransactionDbUnitTestExecutionListener
 import com.github.springtestdbunit.annotation.DatabaseSetup
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.data.domain.PageRequest
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.TestExecutionListeners
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener
@@ -12,7 +13,6 @@ import ru.practicum.shareit.item.model.Item
 import ru.practicum.shareit.user.model.User
 import spock.lang.Specification
 
-import java.time.LocalDate
 import java.time.LocalDateTime
 
 @DataJpaTest
@@ -84,7 +84,7 @@ class ItemRepositorySpec extends Specification {
     @DatabaseSetup(value = "classpath:database/set_items_and_users.xml", connection = "dbUnitDatabaseConnection")
     def "Should return Items founded by text" () {
         when:
-        def items = repository.searchByText("Item_2_User_1")
+        def items = repository.searchByText("Item_2_User_1", PageRequest.of(0, 20))
 
         then:
         with(items) {
@@ -103,7 +103,8 @@ class ItemRepositorySpec extends Specification {
         when:
         def items =
                 repository.itemsWithNextAndPrevBookings(1,
-                        LocalDateTime.of(2023,3,3,12,0,0), null)
+                        LocalDateTime.of(2023, 3, 3, 12, 0, 0), null,
+                        0, 20)
 
         then:
         with(items) {

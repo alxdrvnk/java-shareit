@@ -33,7 +33,6 @@ class ItemServiceImplSpec extends Specification {
                 .description("non-exists")
                 .available(true)
                 .owner(User.builder().build())
-                .request(null)
                 .build()
 
         def itemRepository = Stub(ItemRepository) {
