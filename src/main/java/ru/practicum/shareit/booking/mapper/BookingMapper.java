@@ -1,36 +1,109 @@
 package ru.practicum.shareit.booking.mapper;
 
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
+import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingItemDto;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
+import ru.practicum.shareit.item.dto.ItemForBookingDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 
-@Mapper(componentModel = "spring")
-public interface BookingMapper {
+@Component
+public class BookingMapper {
 
-    @Mapping(target = "id", ignore = true)
-    @Mapping(target = "booker", source = "user")
-    Booking toBooking(BookingRequestDto bookingRequestDto, Item item, User user, BookingStatus status);
+    public Booking toBooking(BookingRequestDto bookingRequestDto, Item item, User user, BookingStatus status) {
+        if (bookingRequestDto == null && item == null && user == null && status == null) {
+            return null;
+        }
 
-    BookingDto toBookingDto(Booking booking);
+        Booking.BookingBuilder booking = Booking.builder();
 
-    Collection<BookingDto> toBookingDtoList(Collection<Booking> allByState);
+        if (bookingRequestDto != null) {
+            booking.start(fromInstant(bookingRequestDto.getStart()));
+            booking.end(fromInstant(bookingRequestDto.getEnd()));
+        }
+        booking.item(item);
+        booking.booker(user);
+        booking.status(status);
 
-    @Mapping(target = "bookerId", source = "booker.id")
-    @Mapping(target = "startDate", source = "start")
-    @Mapping(target = "endDate", source = "end")
-    BookingItemDto toBookingItemDto(Booking booking);
+        return booking.build();
+    }
 
-    default LocalDateTime fromInstant(LocalDateTime instant) {
-        return instant == null ? null :  instant.truncatedTo(ChronoUnit.SECONDS);
+    public BookingDto toBookingDto(Booking booking) {
+        if (booking == null) {
+            return null;
+        }
+
+        BookingDto.BookingDtoBuilder bookingDto = BookingDto.builder();
+
+        bookingDto.id(booking.getId());
+        bookingDto.start(fromInstant(booking.getStart()));
+        bookingDto.end(fromInstant(booking.getEnd()));
+        bookingDto.item(itemToItemForBookingDto(booking.getItem()));
+        bookingDto.booker(booking.getBooker());
+        bookingDto.status(booking.getStatus());
+
+        return bookingDto.build();
+    }
+
+    public Collection<BookingDto> toBookingDtoList(Collection<Booking> allByState) {
+        if (allByState == null) {
+            return Collections.emptyList();
+        }
+
+        Collection<BookingDto> collection = new ArrayList<>(allByState.size());
+        for (Booking booking : allByState) {
+            collection.add(toBookingDto(booking));
+        }
+
+        return collection;
+    }
+
+    public BookingItemDto toBookingItemDto(Booking booking) {
+        if (booking == null) {
+            return null;
+        }
+
+        BookingItemDto.BookingItemDtoBuilder bookingItemDto = BookingItemDto.builder();
+
+        bookingItemDto.bookerId(bookingBookerId(booking));
+        bookingItemDto.startDate(fromInstant(booking.getStart()));
+        bookingItemDto.endDate(fromInstant(booking.getEnd()));
+        bookingItemDto.id(booking.getId());
+
+        return bookingItemDto.build();
+    }
+
+    protected ItemForBookingDto itemToItemForBookingDto(Item item) {
+        if (item == null) {
+            return null;
+        }
+
+        ItemForBookingDto.ItemForBookingDtoBuilder itemForBookingDto = ItemForBookingDto.builder();
+
+        itemForBookingDto.id(item.getId());
+        itemForBookingDto.name(item.getName());
+
+        return itemForBookingDto.build();
+    }
+
+    private Long bookingBookerId(Booking booking) {
+        User booker = booking.getBooker();
+        if (booker == null) {
+            return null;
+        }
+        return booker.getId();
+    }
+
+    private LocalDateTime fromInstant(LocalDateTime instant) {
+        return instant == null ? null : instant.truncatedTo(ChronoUnit.SECONDS);
     }
 }

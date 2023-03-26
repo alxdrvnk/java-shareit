@@ -13,7 +13,7 @@ import java.time.LocalDateTime
 
 class BookingMapperSpec extends Specification {
 
-    BookingMapper mapper = new BookingMapperImpl()
+    private final BookingMapper mapper = new BookingMapper()
 
     def "Should map Booking to BookingDto"() {
         given:

@@ -3,14 +3,11 @@ package ru.practicum.shareit.booking
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
-import ru.practicum.shareit.booking.dto.BookingDto
 import ru.practicum.shareit.booking.dto.BookingRequestDto
 import ru.practicum.shareit.booking.mapper.BookingMapper
-import ru.practicum.shareit.booking.mapper.BookingMapperImpl
 import ru.practicum.shareit.booking.service.BookingService
 import ru.practicum.shareit.exceptions.ShareItExceptionHandler
 import ru.practicum.shareit.exceptions.ShareItNotFoundException
-import ru.practicum.shareit.item.dto.ItemDto
 import spock.lang.Specification
 
 import java.time.LocalDateTime
@@ -22,7 +19,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class BookingControllerSpec extends Specification {
 
     private final ObjectMapper objectMapper = new ObjectMapper()
-    private final BookingMapper bookingMapper = new BookingMapperImpl()
+    private final BookingMapper bookingMapper = new BookingMapper()
 
     def "should return 200 when create booking"() {
         given:

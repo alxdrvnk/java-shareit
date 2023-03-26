@@ -1,7 +1,6 @@
 package ru.practicum.shareit.request
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import ru.practicum.shareit.exceptions.ShareItExceptionHandler
@@ -15,7 +14,6 @@ import spock.lang.Specification
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 
-@SpringBootTest
 class ItemRequestControllerSpec extends Specification {
 
     private final ObjectMapper objectMapper = new ObjectMapper()

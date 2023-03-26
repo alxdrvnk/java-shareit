@@ -5,14 +5,13 @@ import ru.practicum.shareit.exceptions.ShareItAlreadyExistsException
 import ru.practicum.shareit.exceptions.ShareItNotFoundException
 import ru.practicum.shareit.user.dto.UserDto
 import ru.practicum.shareit.user.mapper.UserMapper
-import ru.practicum.shareit.user.mapper.UserMapperImpl
 import ru.practicum.shareit.user.model.User
 import ru.practicum.shareit.user.repository.UserRepository
 import spock.lang.Specification
 
 class UserServiceImplSpec extends Specification {
 
-    private final UserMapper mapper = new UserMapperImpl()
+    private final UserMapper mapper = new UserMapper()
 
     def "Should throw ShareItAlreadyExistsException if updated email already exists"() {
         given:
