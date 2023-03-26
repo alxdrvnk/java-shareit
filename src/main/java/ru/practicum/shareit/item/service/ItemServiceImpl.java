@@ -130,7 +130,7 @@ public class ItemServiceImpl implements ItemService {
             return Collections.emptyList();
         }
 
-        Pageable pageable = PageRequest.of(from/size, size);
+        Pageable pageable = PageRequest.of(from / size, size);
         return itemMapper.toItemDtoList(itemRepository.searchByText(text, pageable));
     }
 
