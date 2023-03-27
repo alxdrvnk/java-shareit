@@ -9,6 +9,7 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.model.ItemRequest;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -105,6 +106,9 @@ public class ItemMapper {
     }
 
     public Collection<ItemForItemRequestDto> toItemForItemRequestDtoList(Collection<Item> items) {
+        if (items == null) {
+            return Collections.emptyList();
+        }
         return items.stream().map(this::toItemForItemRequestDto).collect(Collectors.toList());
     }
 }
