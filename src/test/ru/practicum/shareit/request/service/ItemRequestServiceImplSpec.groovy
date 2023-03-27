@@ -34,7 +34,7 @@ class ItemRequestServiceImplSpec extends Specification {
                 throw new ShareItNotFoundException("")
             }
         }
-        def service = new ItemRequestServiceImpl(clock, mapper, repository, userService)
+        def service = new ItemRequestServiceImpl(clock, repository, userService)
 
         when:
         service.create(itemRequest, 1L)
@@ -65,7 +65,7 @@ class ItemRequestServiceImplSpec extends Specification {
                 return User.builder().build()
             }
         }
-        def service = new ItemRequestServiceImpl(clock, mapper, repository, userService)
+        def service = new ItemRequestServiceImpl(clock, repository, userService)
 
         when:
         def itemRequestResponseDto = service.create(itemRequest, 1L)
@@ -84,7 +84,7 @@ class ItemRequestServiceImplSpec extends Specification {
                 throw new ShareItNotFoundException("")
             }
         }
-        def service = new ItemRequestServiceImpl(clock, mapper, repository, userService)
+        def service = new ItemRequestServiceImpl(clock, repository, userService)
 
         when:
         service.getByUser(1L)
@@ -97,20 +97,20 @@ class ItemRequestServiceImplSpec extends Specification {
         given:
         def repository = Stub(ItemRequestRepository)
         def userService = Stub(UserService)
-        def service = new ItemRequestServiceImpl(clock, mapper, repository, userService)
+        def service = new ItemRequestServiceImpl(clock, repository, userService)
 
         when:
-        service.getByIdWithItems(1L, 1L)
+        service.getById(1L, 1L)
 
         then:
         thrown(ShareItNotFoundException)
     }
 
-    def "Should return 400 when pagination params is page=0 and size=0" () {
+    def "Should return 400 when pagination params is page=0 and size=0"() {
         given:
         def repository = Stub(ItemRequestRepository)
         def userService = Stub(UserService)
-        def service = new ItemRequestServiceImpl(clock, mapper, repository, userService)
+        def service = new ItemRequestServiceImpl(clock, repository, userService)
 
         when:
         service.getAll(1L, 0, 0)
@@ -118,11 +118,11 @@ class ItemRequestServiceImplSpec extends Specification {
         thrown(ShareItBadRequest)
     }
 
-    def "Should return 400 when pagination params is page=-1 and size=3" () {
+    def "Should return 400 when pagination params is page=-1 and size=3"() {
         given:
         def repository = Stub(ItemRequestRepository)
         def userService = Stub(UserService)
-        def service = new ItemRequestServiceImpl(clock, mapper, repository, userService)
+        def service = new ItemRequestServiceImpl(clock, repository, userService)
 
         when:
         service.getAll(1L, -1, 3)
@@ -130,11 +130,11 @@ class ItemRequestServiceImplSpec extends Specification {
         thrown(ShareItBadRequest)
     }
 
-    def "Should return 400 when pagination params is page=0 and size=-1" () {
+    def "Should return 400 when pagination params is page=0 and size=-1"() {
         given:
         def repository = Stub(ItemRequestRepository)
         def userService = Stub(UserService)
-        def service = new ItemRequestServiceImpl(clock, mapper, repository, userService)
+        def service = new ItemRequestServiceImpl(clock, repository, userService)
 
         when:
         service.getAll(1L, 0, -1)

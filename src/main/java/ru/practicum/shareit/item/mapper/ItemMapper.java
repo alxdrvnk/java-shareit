@@ -3,13 +3,14 @@ package ru.practicum.shareit.item.mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.dto.ItemDto;
+import ru.practicum.shareit.item.dto.ItemForItemRequestDto;
 import ru.practicum.shareit.item.dto.ItemResponseDto;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.request.model.ItemRequest;
 
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
@@ -63,21 +64,7 @@ public class ItemMapper {
     }
 
     public List<ItemResponseDto> toItemDtoList(List<Item> items) {
-        //Есть вопрос как реализовать лучше.
-        // Если делать через stream, то нужно делать toItemDto метод static - это смотрится как то странно
-        // если мне нужен просто метод toItemDto, то я могу не создавать объект ItemMapper.
-        // Если нужно использовать все остальные методы, то объект необходимо создать.
-        //return items.stream().map(ItemMapper::toItemDto).collect(Collectors.toList());
-
-        if (items == null) {
-            return Collections.emptyList();
-        }
-
-        List<ItemResponseDto> list = new ArrayList<>(items.size());
-        for (Item item : items) {
-            list.add(toItemDto(item));
-        }
-        return list;
+        return items.stream().map(this::toItemDto).collect(Collectors.toList());
     }
 
     public Item toItem(ItemDto itemDto) {
@@ -104,5 +91,20 @@ public class ItemMapper {
                 .available(itemResponseDto.getAvailable())
                 .owner(itemResponseDto.getOwner())
                 .build();
+    }
+
+    public ItemForItemRequestDto toItemForItemRequestDto(Item item) {
+        return ItemForItemRequestDto.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
+                .available(item.isAvailable())
+                .requestId(item.getRequest().getId())
+                .ownerId(item.getOwner().getId())
+                .build();
+    }
+
+    public Collection<ItemForItemRequestDto> toItemForItemRequestDtoList(Collection<Item> items) {
+        return items.stream().map(this::toItemForItemRequestDto).collect(Collectors.toList());
     }
 }

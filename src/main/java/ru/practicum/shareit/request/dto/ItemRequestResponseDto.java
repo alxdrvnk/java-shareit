@@ -7,7 +7,7 @@ import lombok.extern.jackson.Jacksonized;
 import ru.practicum.shareit.item.dto.ItemForItemRequestDto;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Collection;
 
 @Value
 @Builder
@@ -18,5 +18,5 @@ public class ItemRequestResponseDto {
     LocalDateTime created;
 
     @With
-    List<ItemForItemRequestDto> items;
+    Collection<ItemForItemRequestDto> items;
 }

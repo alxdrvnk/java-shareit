@@ -5,6 +5,8 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import ru.practicum.shareit.exceptions.ShareItExceptionHandler
 import ru.practicum.shareit.exceptions.ShareItNotFoundException
+import ru.practicum.shareit.item.mapper.CommentMapper
+import ru.practicum.shareit.item.mapper.ItemMapper
 import ru.practicum.shareit.request.dto.ItemRequestCreationDto
 import ru.practicum.shareit.request.mapper.ItemRequestMapper
 import ru.practicum.shareit.request.model.ItemRequest
@@ -17,12 +19,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class ItemRequestControllerSpec extends Specification {
 
     private final ObjectMapper objectMapper = new ObjectMapper()
-    private final ItemRequestMapper itemRequestMapper = new ItemRequestMapper()
+
+    private final CommentMapper commentMapper = new CommentMapper()
+    private final ItemMapper itemMapper = new ItemMapper(commentMapper)
+    private final ItemRequestMapper itemRequestMapper = new ItemRequestMapper(itemMapper)
 
     def "Should return 200 when create ItemRequest"() {
         given:
         def service = Mock(ItemRequestService)
-        def controller = new ItemRequestController(itemRequestMapper, service)
+        def mapper = Mock(ItemRequestMapper)
+        mapper.toItemRequest(_ as ItemRequestCreationDto)  >> ItemRequest.builder().build()
+
+        def controller = new ItemRequestController(mapper, service)
         def server = MockMvcBuilders
                 .standaloneSetup(controller)
                 .setControllerAdvice(ShareItExceptionHandler)
@@ -45,7 +53,7 @@ class ItemRequestControllerSpec extends Specification {
                 .andExpect(status().isOk())
 
         then:
-        1 * service.create(_ as ItemRequest, 1L)
+        1 * service.create(_ as ItemRequest, 1L) >> ItemRequest.builder().build()
     }
 
     def "Should return 404 when add ItemRequest with non-existent user"() {

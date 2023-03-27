@@ -2,11 +2,10 @@ package ru.practicum.shareit.request.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exceptions.ShareItBadRequest;
 import ru.practicum.shareit.exceptions.ShareItNotFoundException;
-import ru.practicum.shareit.request.dto.ItemRequestResponseDto;
-import ru.practicum.shareit.request.mapper.ItemRequestMapper;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.model.User;
@@ -22,31 +21,21 @@ import java.util.Collection;
 public class ItemRequestServiceImpl implements ItemRequestService {
 
     private final Clock clock;
-    private final ItemRequestMapper itemRequestMapper;
     private final ItemRequestRepository itemRequestRepository;
     private final UserService userService;
 
     @Override
-    public ItemRequestResponseDto create(ItemRequest request, long userId) {
+    public ItemRequest create(ItemRequest request, long userId) {
         User user = userService.getUserBy(userId);
-        return itemRequestMapper.toItemRequestResponseDto(
-                itemRequestRepository.save(request
-                        .withRequester(user)
-                        .withCreated(LocalDateTime.now(clock))));
+        return itemRequestRepository.save(request
+                .withRequester(user)
+                .withCreated(LocalDateTime.now(clock)));
     }
 
     @Override
-    public Collection<ItemRequestResponseDto> getByUser(long userId) {
+    public Collection<ItemRequest> getByUser(long userId) {
         userService.getUserBy(userId); // Требуется возвращать 404 если пользователь не найден
-        return itemRequestRepository.getByRequesterId(userId);
-    }
-
-    @Override
-    public ItemRequestResponseDto getByIdWithItems(long requestId, long userId) {
-        userService.getUserBy(userId);
-        return itemRequestRepository.getItemRequestById(requestId).orElseThrow(
-                () -> new ShareItNotFoundException(
-                        String.format("ItemRequest with id: %d not found", requestId)));
+        return itemRequestRepository.findByRequesterId(userId);
     }
 
     @Override
@@ -60,9 +49,10 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
 
     @Override
-    public Collection<ItemRequestResponseDto> getAll(long userId, int from, int size) {
+    public Collection<ItemRequest> getAll(long userId, int from, int size) {
         if (from >= 0 && size > 0) {
-            return itemRequestRepository.findByRequesterIdNot(userId, from, size);
+            return itemRequestRepository.findByRequesterIdNot(userId,
+                    PageRequest.of(from / size, size)).getContent();
         } else {
             throw new ShareItBadRequest(
                     String.format("Pagination parameters are not valid: from=%d, size=%d", from, size));

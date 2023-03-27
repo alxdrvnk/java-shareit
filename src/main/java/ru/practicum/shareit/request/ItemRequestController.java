@@ -25,18 +25,18 @@ public class ItemRequestController {
     @PostMapping
     public ItemRequestResponseDto create(@Valid @RequestBody ItemRequestCreationDto dto,
                                          @RequestHeader("X-Sharer-User-Id") long userId) {
-        return itemRequestService.create(mapper.toItemRequest(dto), userId);
+        return mapper.toItemRequestResponseDto(itemRequestService.create(mapper.toItemRequest(dto), userId));
     }
 
     @GetMapping("/{requestId}")
     public ItemRequestResponseDto getById(@PathVariable("requestId") long requestId,
                                           @RequestHeader("X-Sharer-User-Id") long userId) {
-        return itemRequestService.getByIdWithItems(requestId, userId);
+        return mapper.toItemRequestResponseDto(itemRequestService.getById(requestId, userId));
     }
 
     @GetMapping
     public Collection<ItemRequestResponseDto> getByUser(@RequestHeader("X-Sharer-User-Id") long userId) {
-        return itemRequestService.getByUser(userId);
+        return mapper.toItemRequestResponseDtoList(itemRequestService.getByUser(userId));
     }
 
     @GetMapping("/all")
@@ -44,7 +44,7 @@ public class ItemRequestController {
                                                      @RequestParam(defaultValue = "0") int from,
                                                      @RequestParam(defaultValue = "20") int size) {
         validatePaginationParams(from, size);
-        return itemRequestService.getAll(userId, from, size);
+        return mapper.toItemRequestResponseDtoList(itemRequestService.getAll(userId, from, size));
     }
 
     private void validatePaginationParams(int from, int size) {
