@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item.model;
 
 import lombok.*;
+import ru.practicum.shareit.booking.model.BookingForItem;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 
@@ -40,4 +41,12 @@ public class Item {
 
     @OneToMany(mappedBy = "item", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     List<Comment> comments;
+
+    @With
+    @Transient
+    BookingForItem lastBooking;
+
+    @With
+    @Transient
+    BookingForItem nextBooking;
 }

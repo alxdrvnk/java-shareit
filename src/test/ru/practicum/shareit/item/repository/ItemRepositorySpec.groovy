@@ -61,7 +61,7 @@ class ItemRepositorySpec extends Specification {
     @DatabaseSetup(value = "classpath:database/set_items_and_users.xml", connection = "dbUnitDatabaseConnection")
     def "Should return all items by owner id"() {
         when:
-        def items = repository.findByOwnerId(1L)
+        def items = repository.findByOwnerId(1L, PageRequest.of(0, 20)).getContent()
 
         then:
         with(items) {
@@ -69,7 +69,7 @@ class ItemRepositorySpec extends Specification {
             name == ["Item_1_User_1", "Item_2_User_1"]
             description == ["Item_1_User_1", "Item_2_User_1"]
             available == [true, false]
-            it.owner.id == [1L,1L]
+            it.owner.id == [1L, 1L]
             it.owner.name == ["User1", "User1"]
             it.owner.email == ["user1@mail.mail", "user1@mail.mail"]
         }
@@ -77,12 +77,12 @@ class ItemRepositorySpec extends Specification {
             id == [1]
             text == ["Comment to Item 1"]
             author.id == [2]
-            created == ([LocalDateTime.of(2023,3,1,12,0,0,0)])
+            created == ([LocalDateTime.of(2023, 3, 1, 12, 0, 0, 0)])
         }
     }
 
     @DatabaseSetup(value = "classpath:database/set_items_and_users.xml", connection = "dbUnitDatabaseConnection")
-    def "Should return Items founded by text" () {
+    def "Should return Items founded by text"() {
         when:
         def items = repository.searchByText("Item_2_User_1", PageRequest.of(0, 20))
 
@@ -99,7 +99,7 @@ class ItemRepositorySpec extends Specification {
     }
 
     @DatabaseSetup(value = "classpath:database/set_item_bookings_comments.xml", connection = "dbUnitDatabaseConnection")
-    def "Should return Items by owner with last booking and next booking" () {
+    def "Should return Items by owner with last booking and next booking"() {
         when:
         def items =
                 repository.itemsWithNextAndPrevBookings(1,

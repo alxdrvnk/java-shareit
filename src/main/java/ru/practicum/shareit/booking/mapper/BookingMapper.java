@@ -5,6 +5,7 @@ import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingItemDto;
 import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.BookingForItem;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.item.dto.ItemForBookingDto;
 import ru.practicum.shareit.item.model.Item;
@@ -82,6 +83,22 @@ public class BookingMapper {
         return bookingItemDto.build();
     }
 
+    public BookingItemDto toBookingItemDto(BookingForItem booking) {
+        if (booking == null) {
+            return null;
+        }
+
+        BookingItemDto.BookingItemDtoBuilder bookingItemDto = BookingItemDto.builder();
+
+        bookingItemDto.bookerId(booking.getBookerId());
+        bookingItemDto.startDate(fromInstant(booking.getStartDate()));
+        bookingItemDto.endDate(fromInstant(booking.getEndDate()));
+        bookingItemDto.id(booking.getId());
+
+        return bookingItemDto.build();
+    }
+
+
     protected ItemForBookingDto itemToItemForBookingDto(Item item) {
         if (item == null) {
             return null;
@@ -102,6 +119,7 @@ public class BookingMapper {
         }
         return booker.getId();
     }
+
 
     private LocalDateTime fromInstant(LocalDateTime instant) {
         return instant == null ? null : instant.truncatedTo(ChronoUnit.SECONDS);

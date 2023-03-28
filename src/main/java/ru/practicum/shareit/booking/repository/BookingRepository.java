@@ -4,6 +4,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.BookingForItem;
 import ru.practicum.shareit.booking.model.BookingStatus;
 
 import java.time.LocalDateTime;
@@ -61,4 +62,31 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "WHERE b.id = :id " +
             "AND (b.booker.id = :userId OR b.item.owner.id = :userId)")
     Optional<Booking> findByIdAndUserId(long id, long userId);
+
+    @Query(value = "SELECT DISTINCT ON(b.ITEM_ID) " +
+            "b.id AS id, " +
+            "b.booker_id AS bookerId, " +
+            "b.item_id AS itemId," +
+            "b.start_date AS startDate, " +
+            "b.end_date AS endDate " +
+            "FROM BOOKINGS b " +
+            "WHERE b.ITEM_ID IN :itemIdList " +
+            "AND (b.END_DATE <= :date " +
+            "OR b.START_DATE < :date AND b.END_DATE > :date) " +
+            "AND b.STATUS = 'APPROVED' " +
+            "ORDER BY b.END_DATE DESC", nativeQuery = true)
+    List<BookingForItem> findLastBookingForItems(List<Long> itemIdList, LocalDateTime date);
+
+    @Query(value = "SELECT DISTINCT ON(b.ITEM_ID) " +
+            "b.id AS id, " +
+            "b.booker_id AS bookerId, " +
+            "b.item_id AS itemId," +
+            "b.start_date AS startDate, " +
+            "b.end_date AS endDate " +
+            "FROM BOOKINGS b " +
+            "WHERE b.ITEM_ID IN :itemIdList " +
+            "AND b.START_DATE >= :date " +
+            "AND b.STATUS = 'APPROVED' " +
+            "ORDER BY b.END_DATE DESC", nativeQuery = true)
+    List<BookingForItem> findNextBookingForItems(List<Long> itemIdList, LocalDateTime date);
 }

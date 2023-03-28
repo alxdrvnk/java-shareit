@@ -35,8 +35,8 @@ public class ItemController {
 
     @PatchMapping("/{id}")
     public ItemResponseDto update(@PathVariable("id") long id,
-                          @RequestBody ItemDto itemDto,
-                          @RequestHeader("X-Sharer-User-Id") long userId) {
+                                  @RequestBody ItemDto itemDto,
+                                  @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info(String.format("Update Item with id: %d . Data: %s", id, itemDto));
         return itemMapper.toItemDto(
                 itemService.update(itemDto, id, userId));
@@ -45,7 +45,7 @@ public class ItemController {
     @GetMapping("/{id}")
     public ItemResponseDto getItemById(@PathVariable("id") long id,
                                        @RequestHeader("X-Sharer-User-Id") long userId) {
-        return itemService.getItemById(id, userId);
+        return itemMapper.toItemDto(itemService.getItemById(id, userId));
     }
 
     @GetMapping
@@ -53,7 +53,7 @@ public class ItemController {
                                                 @RequestParam(defaultValue = "0") int from,
                                                 @RequestParam(defaultValue = "20") int size) {
         validatePaginationParams(from, size);
-        return itemService.getItemsForOwner(userId, from, size);
+        return itemMapper.toItemDtoList(itemService.getItemsForOwner(userId, from, size));
     }
 
     @GetMapping("/search")
@@ -63,7 +63,7 @@ public class ItemController {
                                                           @RequestParam String text) {
         log.info(String.format("Search Item request with text: \"%s\"", text));
         validatePaginationParams(from, size);
-        return itemService.getByText(userId, text, from, size);
+        return itemMapper.toItemDtoList(itemService.getByText(userId, text, from, size));
     }
 
     @PostMapping("/{id}/comment")
