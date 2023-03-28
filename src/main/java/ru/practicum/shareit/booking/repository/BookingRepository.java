@@ -87,6 +87,6 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "WHERE b.ITEM_ID IN :itemIdList " +
             "AND b.START_DATE >= :date " +
             "AND b.STATUS = 'APPROVED' " +
-            "ORDER BY b.END_DATE DESC", nativeQuery = true)
+            "ORDER BY b.START_DATE ASC", nativeQuery = true)
     List<BookingForItem> findNextBookingForItems(List<Long> itemIdList, LocalDateTime date);
 }
