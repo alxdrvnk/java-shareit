@@ -6,7 +6,7 @@ import spock.lang.Specification
 
 class UserMapperSpec extends Specification {
 
-    UserMapper mapper = new UserMapperImpl()
+    UserMapper mapper = new UserMapper()
 
     def "Should map User to UserDto"() {
         given:

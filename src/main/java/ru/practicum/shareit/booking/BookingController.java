@@ -53,26 +53,37 @@ public class BookingController {
 
    @GetMapping
    public Collection<BookingDto> getByState(@RequestParam(defaultValue = "ALL") String state,
+                                            @RequestParam(defaultValue = "0") int from,
+                                            @RequestParam(defaultValue = "20") int size,
                                             @RequestHeader("X-Sharer-User-Id") long userId) {
       log.info(String.format(
               "Get Booking request by State: %s", state));
+      validatePaginationParams(from, size);
       return mapper.toBookingDtoList(
-              bookingService.getAllByState(userId, BookingState.fromString(state)));
+              bookingService.getAllByState(userId, BookingState.fromString(state), from, size));
    }
 
    @GetMapping("/owner")
    public Collection<BookingDto> getByOwnerWithState(@RequestParam(defaultValue = "ALL") String state,
+                                                     @RequestParam(defaultValue = "0") int from,
+                                                     @RequestParam(defaultValue = "20") int size,
                                                      @RequestHeader("X-Sharer-User-Id") long userId) {
       log.info(String.format(
               "Get Booking request by State: %s for User with ID: %d", state, userId));
-
+      validatePaginationParams(from, size);
       return mapper.toBookingDtoList(
-              bookingService.getAllByOwnerWithState(userId, BookingState.fromString(state)));
+              bookingService.getAllByOwnerWithState(userId, BookingState.fromString(state), from, size));
    }
 
    private void validateEndBeforeStartDate(BookingRequestDto dto) {
       if (dto.getEnd().isBefore(dto.getStart())) {
          throw new ShareItBadRequest("End date can't be before Start");
+      }
+   }
+
+   private void validatePaginationParams(int from, int size) {
+      if (from < 0 || size < 1) {
+         throw new ShareItBadRequest(String.format("Wrong parameters: from = %d and size = %d", from, size));
       }
    }
 }

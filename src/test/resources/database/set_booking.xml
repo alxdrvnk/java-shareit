@@ -84,7 +84,7 @@
     <PUBLIC.BOOKINGS
             id="4"
             start_date="2023-03-8 12:00:00.000"
-            end_date="2023-03-10 12:00:00.000"
+            end_date="2023-03-9 12:00:00.000"
             status="APPROVED"
             item_id="4"
             booker_id="4"
@@ -99,8 +99,8 @@
     />
     <PUBLIC.BOOKINGS
             id="6"
-            start_date="2023-03-8 12:00:00.000"
-            end_date="2023-03-10 12:00:00.000"
+            start_date="2023-03-10 12:00:00.000"
+            end_date="2023-03-11 12:00:00.000"
             status="APPROVED"
             item_id="4"
             booker_id="4"

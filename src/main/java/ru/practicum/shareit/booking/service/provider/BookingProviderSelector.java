@@ -27,14 +27,14 @@ public class BookingProviderSelector implements BookingProvider {
     }
 
     @Override
-    public Collection<Booking> getBookingsOfUser(Long userId, String state) {
+    public Collection<Booking> getBookingsOfUser(Long userId, String state, int from, int size) {
         BookingProvider provider = providers.get(BookingState.valueOf(state));
-        return provider.getBookingsOfUser(userId, state);
+        return provider.getBookingsOfUser(userId, state, from, size);
     }
 
     @Override
-    public Collection<Booking> getBookingsOfOwnerItems(Long userId, String state) {
+    public Collection<Booking> getBookingsOfOwnerItems(Long userId, String state, int from, int size) {
         BookingProvider provider = providers.get(BookingState.valueOf(state));
-        return provider.getBookingsOfOwnerItems(userId, state);
+        return provider.getBookingsOfOwnerItems(userId, state, from, size);
     }
 }

@@ -1,22 +1,18 @@
 package ru.practicum.shareit.user.service
 
-
-import com.github.springtestdbunit.annotation.DatabaseSetup
 import org.springframework.dao.DataIntegrityViolationException
 import ru.practicum.shareit.exceptions.ShareItAlreadyExistsException
 import ru.practicum.shareit.exceptions.ShareItNotFoundException
 import ru.practicum.shareit.user.dto.UserDto
 import ru.practicum.shareit.user.mapper.UserMapper
-import ru.practicum.shareit.user.mapper.UserMapperImpl
 import ru.practicum.shareit.user.model.User
 import ru.practicum.shareit.user.repository.UserRepository
 import spock.lang.Specification
 
 class UserServiceImplSpec extends Specification {
 
-    private final UserMapper mapper = new UserMapperImpl()
+    private final UserMapper mapper = new UserMapper()
 
-    @DatabaseSetup(value = "classpath:database/set_user.xml", connection = "dbUnitDatabaseConnection")
     def "Should throw ShareItAlreadyExistsException if updated email already exists"() {
         given:
         def userDto = UserDto.builder()
@@ -38,13 +34,13 @@ class UserServiceImplSpec extends Specification {
         def service = new UserServiceImpl(repository, mapper)
 
         when:
-        service.update(userDto,2L)
+        service.update(userDto, 2L)
 
         then:
         thrown(ShareItAlreadyExistsException)
     }
 
-    def "Should throw ShareItNotFoundException if get non-existing user" () {
+    def "Should throw ShareItNotFoundException if get non-existing user"() {
         given:
         def dao = Stub(UserRepository) {
             findById(_ as Long) >> Optional.empty()
@@ -59,10 +55,10 @@ class UserServiceImplSpec extends Specification {
         thrown(ShareItNotFoundException)
     }
 
-    def "Should throw ShareItNotFoundException if delete non-existing user" () {
+    def "Should throw ShareItNotFoundException if delete non-existing user"() {
         given:
         def dao = Stub(UserRepository) {
-            deleteById(_ as Long) >> {throw new IllegalArgumentException("") }
+            deleteById(_ as Long) >> { throw new IllegalArgumentException("") }
         }
 
         def service = new UserServiceImpl(dao, mapper)

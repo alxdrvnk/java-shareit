@@ -1,0 +1,42 @@
+<dataset>
+    <!--  Users  -->
+    <public.users
+            id="1"
+            name="Requester"
+            email="requester@mail.mail"
+    />
+    <public.users
+            id="2"
+            name="Item_2_owner"
+            email="item2owner@mail.mail"
+    />
+    <public.users
+            id="3"
+            name="Item_3_owner"
+            email="item3owner@mail.mail"
+    />
+    <!--  Items  -->
+    <public.items
+            id="1"
+            name="Request item 1"
+            description="Request item 1 description"
+            is_available="true"
+            owner_id="2"
+            request_id="1"
+    />
+    <public.items
+            id="2"
+            name="Request item 2"
+            description="Request item 2 description"
+            is_available="true"
+            owner_id="3"
+            request_id="1"
+    />
+    <!--  Requests  -->
+    <public.requests
+            id="1"
+            description="Test request description"
+            requester_id="1"
+            create_date="2007-09-01 12:00:00.000"
+    />
+</dataset>
