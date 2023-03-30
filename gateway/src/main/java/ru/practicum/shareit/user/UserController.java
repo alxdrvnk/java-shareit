@@ -7,7 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.shareit.exceptions.GatewayValidationException;
 import ru.practicum.shareit.user.dto.UserGatewayDto;
+
+import javax.validation.constraints.PositiveOrZero;
 
 @Slf4j(topic = "Gateway UserController")
 @Validated
@@ -19,6 +22,11 @@ public class UserController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Object> getUser(@PathVariable(name = "id") long userId) {
+
+        if (userId < 0) {
+            throw new GatewayValidationException("User Id can't be negative");
+        }
+
         log.info(String.format("Get user with id: %d", userId));
         return userClient.getUser(userId);
     }
@@ -37,7 +45,7 @@ public class UserController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<Object> updateUser(@PathVariable(name = "id") long userId,
-                                             @Validated @RequestBody UserGatewayDto dto) {
+                                             @RequestBody UserGatewayDto dto) {
         log.info(String.format("Update User with id: %d . Data: %s", userId, dto));
         return userClient.updateUser(userId, dto);
     }

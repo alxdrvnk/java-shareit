@@ -55,16 +55,4 @@ public class ShareItExceptionHandler extends ResponseEntityExceptionHandler {
         log.warn(String.format("WARNING: %s", error));
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
-
-    @ExceptionHandler(value = ShareItUnsupportedStatus.class)
-    public ResponseEntity<Object> handleUnsuportedStatusException(ShareItUnsupportedStatus exception,
-                                                                  WebRequest request) {
-        ShareItSingleError error = ShareItSingleError.builder()
-                .state(HttpStatus.BAD_REQUEST.value())
-                .error("Unknown state: UNSUPPORTED_STATUS")
-                .build();
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(error);
-    }
-
 }

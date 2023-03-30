@@ -1,6 +1,8 @@
 package ru.practicum.shareit.booking.dto;
 
 
+import ru.practicum.shareit.exceptions.GatewayUnsupportedStatus;
+
 public enum BookingState {
     ALL,
     CURRENT,
@@ -13,7 +15,7 @@ public enum BookingState {
         try {
             return BookingState.valueOf(state);
         } catch (IllegalArgumentException e) {
-            throw new ShareItUnsupportedStatus(
+            throw new GatewayUnsupportedStatus(
                     String.format("Booking doesn't support '%s' state", state));
         }
     }
