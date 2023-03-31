@@ -8,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingGatewayDto;
 import ru.practicum.shareit.booking.dto.BookingState;
+import ru.practicum.shareit.exceptions.GatewayBadRequest;
 
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -54,6 +55,7 @@ public class BookingController {
                                                 @Validated @RequestBody BookingGatewayDto dto) {
         log.info(String.format(
                 "Create Booking request. Data: %s", dto));
+        validateEndBeforeStartDate(dto);
         return bookingClient.createBooking(userId, dto);
     }
 
@@ -64,5 +66,11 @@ public class BookingController {
         log.info(String.format(
                 "Approve request for Booking with id: %d.", id));
         return bookingClient.approveBooking(userId, id, approved);
+    }
+
+    private void validateEndBeforeStartDate(BookingGatewayDto dto) {
+        if (dto.getEnd().isBefore(dto.getStart())) {
+            throw new GatewayBadRequest("End date can't be before Start");
+        }
     }
 }

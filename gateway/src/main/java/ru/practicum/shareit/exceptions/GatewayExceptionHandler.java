@@ -34,4 +34,14 @@ public class GatewayExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(error);
     }
+
+    @ExceptionHandler(value = GatewayBadRequest.class)
+    public ResponseEntity<Object> handleBadRequestException(GatewayBadRequest exception,
+                                                            WebRequest request) {
+        GatewayError error = GatewayError.builder()
+                .status(HttpStatus.BAD_REQUEST.value())
+                .errors(List.of(exception.getMessage())).build();
+        log.warn(String.format("WARNING: %s", error));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
 }
