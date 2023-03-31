@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import ru.practicum.shareit.exceptions.error.ShareItError;
-import ru.practicum.shareit.exceptions.error.ShareItSingleError;
 
 import java.util.List;
 

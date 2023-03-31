@@ -5,9 +5,6 @@ import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 import ru.practicum.shareit.user.model.User;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-
 @Value
 @Builder
 @Jacksonized

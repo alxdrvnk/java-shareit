@@ -7,8 +7,6 @@ import lombok.extern.jackson.Jacksonized;
 import ru.practicum.shareit.booking.dto.BookingItemDto;
 import ru.practicum.shareit.user.model.User;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Value
