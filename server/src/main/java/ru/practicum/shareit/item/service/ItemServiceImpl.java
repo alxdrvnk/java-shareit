@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.model.Booking;
@@ -101,7 +102,8 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<Item> getItemsForOwner(long userId, int from, int size) {
-        List<Item> items = itemRepository.findByOwnerId(userId, PageRequest.of(from / size, size)).getContent();
+        List<Item> items = itemRepository.findByOwnerId(userId, PageRequest.of(from / size, size,
+                Sort.by("id").ascending())).getContent();
 
         if (items.isEmpty()) {
             return Collections.emptyList();
