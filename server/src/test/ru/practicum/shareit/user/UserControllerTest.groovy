@@ -5,7 +5,7 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import ru.practicum.shareit.exceptions.ShareItAlreadyExistsException
 import ru.practicum.shareit.exceptions.ShareItExceptionHandler
-import ru.practicum.shareit.user.dto.UserGatewayDto
+import ru.practicum.shareit.user.dto.UserDto
 import ru.practicum.shareit.user.mapper.UserMapper
 import ru.practicum.shareit.user.model.User
 import ru.practicum.shareit.user.service.UserService
@@ -30,7 +30,7 @@ class UserControllerTest extends Specification {
                 .build()
 
         and:
-        def userDto = UserGatewayDto.builder()
+        def userDto = UserDto.builder()
                 .name("user1")
                 .email("user1@email.email")
                 .build()
@@ -58,7 +58,7 @@ class UserControllerTest extends Specification {
                 .build()
 
         and:
-        def userDto = UserGatewayDto.builder()
+        def userDto = UserDto.builder()
                 .name("user1")
                 .email("user1@email.email")
                 .build()
@@ -88,7 +88,7 @@ class UserControllerTest extends Specification {
                 .build()
 
         and:
-        def userDto = UserGatewayDto.builder()
+        def userDto = UserDto.builder()
                 .name("user1")
                 .email("user1@email.email")
                 .build()
