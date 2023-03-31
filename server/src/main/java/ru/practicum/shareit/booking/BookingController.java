@@ -8,9 +8,7 @@ import ru.practicum.shareit.booking.dto.BookingRequestDto;
 import ru.practicum.shareit.booking.mapper.BookingMapper;
 import ru.practicum.shareit.booking.service.BookingService;
 import ru.practicum.shareit.booking.service.BookingState;
-import ru.practicum.shareit.exceptions.ShareItBadRequest;
 
-import javax.validation.Valid;
 import java.util.Collection;
 
 @Slf4j(topic = "BookingController")
@@ -22,11 +20,10 @@ public class BookingController {
    private final BookingMapper mapper;
 
    @PostMapping
-   public BookingDto create(@Valid @RequestBody BookingRequestDto bookingDto,
+   public BookingDto create(@RequestBody BookingRequestDto bookingDto,
                             @RequestHeader("X-Sharer-User-Id") long userId) {
       log.info(String.format(
               "Create Booking request. Data: %s", bookingDto));
-      validateEndBeforeStartDate(bookingDto);
       return mapper.toBookingDto(
               bookingService.create(bookingDto, userId));
    }
@@ -58,7 +55,6 @@ public class BookingController {
                                             @RequestHeader("X-Sharer-User-Id") long userId) {
       log.info(String.format(
               "Get Booking request by State: %s", state));
-      validatePaginationParams(from, size);
       return mapper.toBookingDtoList(
               bookingService.getAllByState(userId, BookingState.valueOf(state), from, size));
    }
@@ -70,20 +66,7 @@ public class BookingController {
                                                      @RequestHeader("X-Sharer-User-Id") long userId) {
       log.info(String.format(
               "Get Booking request by State: %s for User with ID: %d", state, userId));
-      validatePaginationParams(from, size);
       return mapper.toBookingDtoList(
               bookingService.getAllByOwnerWithState(userId, BookingState.valueOf(state), from, size));
-   }
-
-   private void validateEndBeforeStartDate(BookingRequestDto dto) {
-      if (dto.getEnd().isBefore(dto.getStart())) {
-         throw new ShareItBadRequest("End date can't be before Start");
-      }
-   }
-
-   private void validatePaginationParams(int from, int size) {
-      if (from < 0 || size < 1) {
-         throw new ShareItBadRequest(String.format("Wrong parameters: from = %d and size = %d", from, size));
-      }
    }
 }

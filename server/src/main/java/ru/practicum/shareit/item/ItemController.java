@@ -3,7 +3,6 @@ package ru.practicum.shareit.item;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.exceptions.ShareItBadRequest;
 import ru.practicum.shareit.item.dto.CommentRequestDto;
 import ru.practicum.shareit.item.dto.CommentResponseDto;
 import ru.practicum.shareit.item.dto.ItemDto;
@@ -26,7 +25,7 @@ public class ItemController {
     private final CommentMapper commentMapper;
 
     @PostMapping
-    public ItemResponseDto create(@Valid @RequestBody ItemDto itemDto,
+    public ItemResponseDto create(@RequestBody ItemDto itemDto,
                                   @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info(String.format("Create Item request. Data: %s", itemDto));
         return itemMapper.toItemDto(
@@ -45,6 +44,7 @@ public class ItemController {
     @GetMapping("/{id}")
     public ItemResponseDto getItemById(@PathVariable("id") long id,
                                        @RequestHeader("X-Sharer-User-Id") long userId) {
+        log.info(String.format("Get Item by id: %d", id));
         return itemMapper.toItemDto(itemService.getItemById(id, userId));
     }
 
@@ -52,7 +52,7 @@ public class ItemController {
     public List<ItemResponseDto> getItemsByUser(@RequestHeader("X-Sharer-User-Id") long userId,
                                                 @RequestParam(defaultValue = "0") int from,
                                                 @RequestParam(defaultValue = "20") int size) {
-        validatePaginationParams(from, size);
+        log.info(String.format("Get Item by User Id: %d. Params: from=%d, sise=%d", userId, from, size));
         return itemMapper.toItemDtoList(itemService.getItemsForOwner(userId, from, size));
     }
 
@@ -62,12 +62,11 @@ public class ItemController {
                                                           @RequestParam(defaultValue = "20") int size,
                                                           @RequestParam String text) {
         log.info(String.format("Search Item request with text: \"%s\"", text));
-        validatePaginationParams(from, size);
         return itemMapper.toItemDtoList(itemService.getByText(userId, text, from, size));
     }
 
     @PostMapping("/{id}/comment")
-    public CommentResponseDto addComment(@Valid @RequestBody CommentRequestDto commentDto,
+    public CommentResponseDto addComment(@RequestBody CommentRequestDto commentDto,
                                          @PathVariable("id") long itemId,
                                          @RequestHeader("X-Sharer-User-Id") long userId) {
         log.info(
@@ -76,11 +75,5 @@ public class ItemController {
                         userId,
                         itemId));
         return commentMapper.toCommentResponseDto(itemService.addComment(userId, itemId, commentDto));
-    }
-
-    private void validatePaginationParams(int from, int size) {
-        if (from < 0 || size < 1) {
-            throw new ShareItBadRequest(String.format("Wrong parameters: from = %d and size = %d", from, size));
-        }
     }
 }

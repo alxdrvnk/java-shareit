@@ -23,17 +23,20 @@ public class ItemRequestController {
     @PostMapping
     public ItemRequestResponseDto create(@RequestBody ItemRequestCreationDto dto,
                                          @RequestHeader("X-Sharer-User-Id") long userId) {
+        log.info(String.format("Create Item Request by User with Id:%d . Data: %s", userId, dto));
         return mapper.toItemRequestResponseDto(itemRequestService.create(mapper.toItemRequest(dto), userId));
     }
 
     @GetMapping("/{requestId}")
     public ItemRequestResponseDto getById(@PathVariable("requestId") long requestId,
                                           @RequestHeader("X-Sharer-User-Id") long userId) {
+        log.info(String.format("Get Item Request with Id: %d and  User id: %d", requestId, userId));
         return mapper.toItemRequestResponseDto(itemRequestService.getById(requestId, userId));
     }
 
     @GetMapping
     public Collection<ItemRequestResponseDto> getByUser(@RequestHeader("X-Sharer-User-Id") long userId) {
+        log.info(String.format("Get all Item Requests by User id: %d", userId));
         return mapper.toItemRequestResponseDtoList(itemRequestService.getByUser(userId));
     }
 
@@ -41,12 +44,7 @@ public class ItemRequestController {
     public Collection<ItemRequestResponseDto> getAll(@RequestHeader("X-Sharer-User-Id") long userId,
                                                      @RequestParam(defaultValue = "0") int from,
                                                      @RequestParam(defaultValue = "20") int size) {
+        log.info("Get all Item Requests");
         return mapper.toItemRequestResponseDtoList(itemRequestService.getAll(userId, from, size));
     }
-
-//    private void validatePaginationParams(int from, int size) {
-//        if (from < 0 || size < 1) {
-//            throw new ShareItBadRequest(String.format("Wrong parameters: from = %d and size = %d", from, size));
-//        }
-//    }
 }

@@ -32,13 +32,16 @@ public class UserController {
 
     @GetMapping
     public List<UserDto> getAll() {
+        log.info("Get all Users");
         return mapper.toUserDtoList(userService.getAllUsers());
     }
 
     @GetMapping("/{id}")
     public UserDto getUserBy(@PathVariable("id") Long id) {
+        log.info(String.format("Get User by Id: %d", id));
         return mapper.toUserDto(userService.getUserBy(id));
     }
+
 
     @DeleteMapping("/{id}")
     public void deleteUserBy(@PathVariable("id") Long id) {

@@ -8,7 +8,6 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
-import javax.validation.constraints.FutureOrPresent;
 import java.time.LocalDateTime;
 
 @Value
@@ -17,7 +16,6 @@ import java.time.LocalDateTime;
 public class BookingRequestDto {
 
     Long itemId;
-    @FutureOrPresent
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     LocalDateTime start;
