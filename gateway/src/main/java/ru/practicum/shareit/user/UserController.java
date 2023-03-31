@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exceptions.GatewayValidationException;
 import ru.practicum.shareit.user.dto.UserGatewayDto;
 
-import javax.validation.constraints.PositiveOrZero;
-
 @Slf4j(topic = "Gateway UserController")
 @Validated
 @Controller
