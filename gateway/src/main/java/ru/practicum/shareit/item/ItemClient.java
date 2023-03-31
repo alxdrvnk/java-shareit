@@ -50,7 +50,7 @@ public class ItemClient extends BaseClient {
     }
 
     public ResponseEntity<Object> updateItem(long userId, long itemId, ItemGatewayDto dto) {
-        return patch("" + itemId, userId, dto);
+        return patch("/" + itemId, userId, dto);
     }
 
     public ResponseEntity<Object> addComment(long userId, long itemId, CommentGatewayDto dto) {

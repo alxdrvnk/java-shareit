@@ -13,15 +13,12 @@ import javax.validation.constraints.NotNull;
 @Jacksonized
 public class ItemDto {
 
-     Long id;
+    Long id;
 
-    @NotBlank
     String name;
 
-    @NotBlank
     String description;
 
-    @NotNull
     Boolean available;
 
     User owner;

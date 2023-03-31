@@ -16,11 +16,8 @@ import java.util.List;
 @Jacksonized
 public class ItemResponseDto {
     Long id;
-    @NotBlank
     String name;
-    @NotBlank
     String description;
-    @NotNull
     Boolean available;
     User owner;
     Long requestId;

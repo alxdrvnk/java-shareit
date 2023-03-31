@@ -23,7 +23,7 @@ public class ItemRequestController {
     private final ItemRequestService itemRequestService;
 
     @PostMapping
-    public ItemRequestResponseDto create(@Valid @RequestBody ItemRequestCreationDto dto,
+    public ItemRequestResponseDto create(@RequestBody ItemRequestCreationDto dto,
                                          @RequestHeader("X-Sharer-User-Id") long userId) {
         return mapper.toItemRequestResponseDto(itemRequestService.create(mapper.toItemRequest(dto), userId));
     }
@@ -43,13 +43,12 @@ public class ItemRequestController {
     public Collection<ItemRequestResponseDto> getAll(@RequestHeader("X-Sharer-User-Id") long userId,
                                                      @RequestParam(defaultValue = "0") int from,
                                                      @RequestParam(defaultValue = "20") int size) {
-        validatePaginationParams(from, size);
         return mapper.toItemRequestResponseDtoList(itemRequestService.getAll(userId, from, size));
     }
 
-    private void validatePaginationParams(int from, int size) {
-        if (from < 0 || size < 1) {
-            throw new ShareItBadRequest(String.format("Wrong parameters: from = %d and size = %d", from, size));
-        }
-    }
+//    private void validatePaginationParams(int from, int size) {
+//        if (from < 0 || size < 1) {
+//            throw new ShareItBadRequest(String.format("Wrong parameters: from = %d and size = %d", from, size));
+//        }
+//    }
 }

@@ -17,16 +17,12 @@ import java.time.LocalDateTime;
 @Jacksonized
 public class BookingRequestDto {
 
-    @NotNull
     Long itemId;
     @FutureOrPresent
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @NotNull
     LocalDateTime start;
-    @FutureOrPresent
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @NotNull
     LocalDateTime end;
 }

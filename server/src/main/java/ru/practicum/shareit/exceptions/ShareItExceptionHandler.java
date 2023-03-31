@@ -26,15 +26,6 @@ public class ShareItExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
-    @ExceptionHandler(value = ShareItValidationException.class)
-    public ResponseEntity<Object> handleValidationException(ShareItValidationException exception,
-                                                            WebRequest request) {
-        ShareItError error = ShareItError.builder()
-                .status(HttpStatus.CONFLICT.value())
-                .errors(List.of(exception.getMessage())).build();
-        log.warn(String.format("WARNING: %s", error));
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
-    }
 
     @ExceptionHandler(value = ShareItAlreadyExistsException.class)
     public ResponseEntity<Object> handleAlreadyExistsException(ShareItAlreadyExistsException exception,

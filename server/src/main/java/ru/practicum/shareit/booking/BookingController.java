@@ -60,7 +60,7 @@ public class BookingController {
               "Get Booking request by State: %s", state));
       validatePaginationParams(from, size);
       return mapper.toBookingDtoList(
-              bookingService.getAllByState(userId, BookingState.fromString(state), from, size));
+              bookingService.getAllByState(userId, BookingState.valueOf(state), from, size));
    }
 
    @GetMapping("/owner")
@@ -72,7 +72,7 @@ public class BookingController {
               "Get Booking request by State: %s for User with ID: %d", state, userId));
       validatePaginationParams(from, size);
       return mapper.toBookingDtoList(
-              bookingService.getAllByOwnerWithState(userId, BookingState.fromString(state), from, size));
+              bookingService.getAllByOwnerWithState(userId, BookingState.valueOf(state), from, size));
    }
 
    private void validateEndBeforeStartDate(BookingRequestDto dto) {

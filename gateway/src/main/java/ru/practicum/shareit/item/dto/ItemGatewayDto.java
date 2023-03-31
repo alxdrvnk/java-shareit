@@ -5,6 +5,7 @@ import lombok.Value;
 import lombok.extern.jackson.Jacksonized;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Value
 @Builder
@@ -17,6 +18,9 @@ public class ItemGatewayDto {
 
     @NotBlank
     String description;
+
+    @NotNull
+    Boolean available;
 
     Long requestId;
 }

@@ -11,6 +11,5 @@ import javax.validation.constraints.NotBlank;
 @Jacksonized
 public class CommentRequestDto {
     long id;
-    @NotBlank
     String text;
 }
