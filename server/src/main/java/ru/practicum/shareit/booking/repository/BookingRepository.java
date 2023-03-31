@@ -74,7 +74,7 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
             "AND (b.END_DATE <= :date " +
             "OR b.START_DATE < :date AND b.END_DATE > :date) " +
             "AND b.STATUS = 'APPROVED' " +
-            "ORDER BY b.item_id, b.END_DATE DESC", nativeQuery = true)
+            "ORDER BY b.item_id ASC, b.END_DATE DESC", nativeQuery = true)
     List<BookingForItem> findLastBookingForItems(List<Long> itemIdList, LocalDateTime date);
 
     @Query(value = "SELECT DISTINCT ON(b.ITEM_ID) " +

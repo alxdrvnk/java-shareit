@@ -5,13 +5,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.exceptions.GatewayValidationException;
 import ru.practicum.shareit.user.dto.UserGatewayDto;
 
+import javax.validation.Valid;
+
 @Slf4j(topic = "Gateway UserController")
-@Validated
 @Controller
 @RequiredArgsConstructor
 @RequestMapping(path = "/users")
@@ -36,7 +36,7 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> addUser(@Validated @RequestBody UserGatewayDto dto) {
+    public ResponseEntity<Object> addUser(@Valid @RequestBody UserGatewayDto dto) {
         log.info(String.format("Create User request. Data: %s", dto));
         return userClient.addUser(dto);
     }

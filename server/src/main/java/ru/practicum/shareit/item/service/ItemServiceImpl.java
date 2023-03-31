@@ -29,6 +29,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j(topic = "ItemService")
@@ -111,14 +112,12 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public Item getItemForOwner(long userId, long itemId) {
-
-        List<Item> items = itemRepository.findByOwnerId(userId, PageRequest.of(0, 1)).getContent();
-
-        if (items.isEmpty()) {
+        Optional<Item> item = itemRepository.findByIdAndOwnerId(itemId, userId);
+        if (item.isEmpty()) {
             throw new ShareItNotFoundException(
                     String.format("Item with id: %d not found", itemId));
         }
-        return getItemsWithBookings(items).get(0);
+        return getItemsWithBookings(List.of(item.get())).get(0);
     }
 
     @Transactional
