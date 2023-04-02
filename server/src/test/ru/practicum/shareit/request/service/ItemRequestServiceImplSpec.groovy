@@ -2,7 +2,7 @@ package ru.practicum.shareit.request.service
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
-import ru.practicum.shareit.cofiguration.ClockConfig
+import ru.practicum.shareit.configuration.ClockConfig
 import ru.practicum.shareit.exceptions.ShareItBadRequest
 import ru.practicum.shareit.exceptions.ShareItNotFoundException
 import ru.practicum.shareit.request.mapper.ItemRequestMapper

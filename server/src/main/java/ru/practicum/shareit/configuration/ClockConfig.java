@@ -1,4 +1,4 @@
-package ru.practicum.shareit.cofiguration;
+package ru.practicum.shareit.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

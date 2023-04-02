@@ -2,8 +2,9 @@ package ru.practicum.shareit.item.service
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.test.context.ContextConfiguration
+import ru.practicum.shareit.booking.mapper.BookingMapper
 import ru.practicum.shareit.booking.repository.BookingRepository
-import ru.practicum.shareit.cofiguration.ClockConfig
+import ru.practicum.shareit.configuration.ClockConfig
 import ru.practicum.shareit.exceptions.ShareItNotFoundException
 import ru.practicum.shareit.item.dto.ItemDto
 import ru.practicum.shareit.item.mapper.CommentMapper
@@ -20,8 +21,9 @@ import java.time.Clock
 @ContextConfiguration(classes = ClockConfig.class)
 class ItemServiceImplSpec extends Specification {
 
-    private final ItemMapper itemMapper = new ItemMapper()
     private final CommentMapper commentMapper = new CommentMapper()
+    private final BookingMapper bookingMapper = new BookingMapper()
+    private final ItemMapper itemMapper = new ItemMapper(commentMapper, bookingMapper)
 
     @Autowired
     private Clock clock
